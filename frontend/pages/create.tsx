@@ -8,7 +8,7 @@ function create() {
       <TextareaInput
         placeholder="한마디 남기기"
         maxLength={512}
-        height="h-32"
+        height="h-24"
       />
     </div>
   );

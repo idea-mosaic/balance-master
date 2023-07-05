@@ -14,7 +14,7 @@ function TextareaInput({ placeholder, color, maxLength, height }: Props) {
 
   return (
     <textarea
-      className={`border rounded-lg p-2 w-full resize-none ${borderColor} ${height}`}
+      className={`border-2 rounded-lg p-2 w-full resize-none ${borderColor} ${height}`}
       placeholder={placeholder}
       maxLength={maxLength}
     />

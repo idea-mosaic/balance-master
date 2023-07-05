@@ -1,3 +1,6 @@
+import { BORDER_COLORS } from "@/constants/color";
+import { getBorderColor } from "@/utils/getBorderColor";
+
 interface Props {
   placeholder?: string;
   color?: "red" | "blue";
@@ -6,15 +9,11 @@ interface Props {
 }
 
 function TextareaInput({ placeholder, color, maxLength, height }: Props) {
-  const colors = {
-    red: "border-mainColor1",
-    blue: "border-mainColor2",
-  };
-  const borderColor = color ? colors[color] : "border-mainColor3";
-
   return (
     <textarea
-      className={`border-2 rounded-lg p-2 w-full resize-none ${borderColor} ${height}`}
+      className={`border-2 rounded-lg p-2 w-full resize-none ${getBorderColor(
+        color
+      )} ${height}`}
       placeholder={placeholder}
       maxLength={maxLength}
     />

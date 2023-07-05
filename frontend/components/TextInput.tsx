@@ -1,3 +1,5 @@
+import { getBorderColor } from "@/utils/getBorderColor";
+
 interface Props {
   placeholder?: string;
   color?: "red" | "blue";
@@ -5,15 +7,10 @@ interface Props {
 }
 
 function TextInput({ placeholder, color, maxLength }: Props) {
-  const colors = {
-    red: "border-mainColor1",
-    blue: "border-mainColor2",
-  };
-  const borderColor = color ? colors[color] : "border-mainColor3";
   return (
     <input
       type="text"
-      className={`border-2 rounded-lg p-2 w-full ${borderColor}`}
+      className={`border-2 rounded-lg p-2 w-full ${getBorderColor(color)}`}
       placeholder={placeholder}
       maxLength={maxLength}
     />

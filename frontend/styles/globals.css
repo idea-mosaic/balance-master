@@ -3,25 +3,25 @@
 @tailwind utilities;
 
 @layer components {
-    .btn {
-        @apply font-bold rounded text-white;
-    }
-    .sm-btn {
-        @apply font-bold rounded text-white px-2 py-2 m-2;
-    }
-    .md-btn {
-        @apply font-bold rounded text-white px-4 py-4 m-4;
-    }
-    .lg-btn {
-        @apply font-bold rounded text-white px-8 py-6 m-6;
-    }
-    .xl-btn {
-        @apply font-bold rounded text-white px-16 py-8 m-8;
-    }
-    .main-color1 {
-        @apply bg-mainColor1;
-    }
-    .main-color2 {
-        @apply bg-mainColor2;
-    }
+  .btn {
+    @apply font-bold rounded text-white;
+  }
+  .sm-btn {
+    @apply font-bold rounded text-white px-2 py-2 m-2;
+  }
+  .md-btn {
+    @apply font-bold rounded text-white px-4 py-4 m-4;
+  }
+  .lg-btn {
+    @apply font-bold rounded text-white px-8 py-6 m-6;
+  }
+  .xl-btn {
+    @apply font-bold rounded text-white px-16 py-8 m-8;
+  }
+  .main-color1 {
+    @apply bg-mainColor1;
+  }
+  .main-color2 {
+    @apply bg-mainColor2;
+  }
 }

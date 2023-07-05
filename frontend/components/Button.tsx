@@ -1,7 +1,7 @@
 export type ButtonProps = {
     content: string;
     clickEvent: () => void;
-    color: string,
+    color: "main-color1" | "main-color2" | "main-color3" | "transparent",
     size: string,
 };
 

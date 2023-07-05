@@ -1,13 +1,14 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
-import styles from '@/styles/Home.module.css'
-
-const inter = Inter({ subsets: ['latin'] })
+import Button from "@/components/button";
 
 export default function Home() {
   return (
     <>
+      <Button clickEvent={function (): void {
+        alert("CLICKED!!");
+      }} content={"MAIN COLOR 1"} color={"main-color1"} size={"sm-btn"}></Button>
+      <Button clickEvent={function (): void {
+        alert("CLICKED!!");
+      }} content={"MAIN COLOR 2"} color={"main-color2"} size={"md-btn"}></Button>
       <p>HOME</p>
     </>
   )

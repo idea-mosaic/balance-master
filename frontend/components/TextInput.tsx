@@ -1,5 +1,3 @@
-import { getBorderColor } from "@/utils/getBorderColor";
-
 interface Props {
   placeholder?: string;
   color?: "red" | "blue";
@@ -10,7 +8,7 @@ function TextInput({ placeholder, color, maxLength }: Props) {
   return (
     <input
       type="text"
-      className={`border-2 rounded-lg p-2 w-full ${getBorderColor(color)}`}
+      className={`border-2 rounded-lg p-2 w-full ${color}`}
       placeholder={placeholder}
       maxLength={maxLength}
     />

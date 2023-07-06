@@ -31,4 +31,28 @@
   .main-color3 {
     @apply bg-mainColor3;
   }
+
+  textarea {
+    @apply border-mainColor3;
+  }
+
+  textarea.red {
+    @apply border-mainColor1;
+  }
+
+  textarea.blue {
+    @apply border-mainColor2;
+  }
+
+  input {
+    @apply border-mainColor3;
+  }
+
+  input.red {
+    @apply border-mainColor1;
+  }
+
+  input.blue {
+    @apply border-mainColor2;
+  }
 }

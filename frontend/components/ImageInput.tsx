@@ -26,7 +26,7 @@ const ImageInput = ({ color }: Props) => {
 
   return (
     <div
-      className={`border-2 ${BORDER_COLORS[color]} w-96 h-60 rounded-3xl flex justify-center items-center`}
+      className={`border-2 ${BORDER_COLORS[color]} w-full h-72 rounded-3xl flex justify-center items-center`}
       style={
         previewImage
           ? {

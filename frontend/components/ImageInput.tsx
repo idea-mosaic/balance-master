@@ -26,7 +26,7 @@ const ImageInput = ({ color }: Props) => {
 
   return (
     <div
-      className={`border-2 ${BORDER_COLORS[color]} w-full h-72 rounded-3xl flex justify-center items-center`}
+      className={`border-2 ${BORDER_COLORS[color]} w-full h-96 rounded-3xl flex justify-center items-center`}
       style={
         previewImage
           ? {
@@ -37,7 +37,7 @@ const ImageInput = ({ color }: Props) => {
           : {}
       }
     >
-      <label htmlFor="imageInput">
+      <label htmlFor={`${color}imageInput`}>
         {previewImage ? (
           <div className="cursor-pointer border w-48 h-12 shadow-xl rounded-xl bg-white text-center flex items-center justify-center ">
             사진 변경하기
@@ -53,7 +53,7 @@ const ImageInput = ({ color }: Props) => {
         )}
       </label>
       <input
-        id="imageInput"
+        id={`${color}imageInput`}
         type="file"
         accept="image/*"
         className="sr-only"

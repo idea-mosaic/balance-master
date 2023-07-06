@@ -1,18 +1,14 @@
-import ImageInput from "@/components/ImageInput";
+import Candidate from "@/components/Candidate";
 import TextInput from "@/components/TextInput";
-import TextareaInput from "@/components/TextareaInput";
 
 function create() {
   return (
-    <div>
-      <TextInput placeholder="입력하세요" color="red" />
-      <TextareaInput
-        placeholder="한마디 남기기"
-        maxLength={512}
-        height="h-24"
-        color="blue"
-      />
-      <ImageInput color="blue" />
+    <div className="flex flex-col gap-4 px-16 pt-4">
+      <TextInput placeholder="게임의 제목을 입력해주세요" />
+      <div className="flex gap-36">
+        <Candidate color="red" />
+        <Candidate color="blue" />
+      </div>
     </div>
   );
 }

@@ -26,7 +26,7 @@ const ImageInput = ({ color }: Props) => {
 
   return (
     <div
-      className={`border-2 ${BORDER_COLORS[color]} w-96 h-60 rounded-3xl flex justify-center items-center`}
+      className={`border-2 ${BORDER_COLORS[color]} w-full h-72 rounded-3xl flex justify-center items-center`}
       style={
         previewImage
           ? {
@@ -39,7 +39,7 @@ const ImageInput = ({ color }: Props) => {
     >
       <label htmlFor="imageInput">
         {previewImage ? (
-          <div className="cursor-pointer border w-48 h-12 shadow-xl rounded-xl bg-white text-center flex items-center justify-center">
+          <div className="cursor-pointer border w-48 h-12 shadow-xl rounded-xl bg-white text-center flex items-center justify-center ">
             사진 변경하기
           </div>
         ) : (
@@ -47,8 +47,8 @@ const ImageInput = ({ color }: Props) => {
             className="cursor-pointer"
             src="/assets/addButtonIcon.svg"
             alt="addButton"
-            height={50}
-            width={50}
+            height={80}
+            width={80}
           />
         )}
       </label>

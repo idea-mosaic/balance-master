@@ -18,12 +18,12 @@ function BoardItem({
   createDate,
 }: Props) {
   return (
-    <div className="flex flex-col w-80">
-      <div className="flex h-40 m-0">
+    <div className="flex flex-col w-80 m-0 cursor-pointer">
+      <div className="flex h-36  hover:scale-110 transition-transform ease-in-out duration-700">
         <div
           className={`w-1/2 bg-mainColor1 border-mainColor1 border-4`}
           style={
-            redImage
+            redImage !== ""
               ? {
                   clipPath: "polygon(0 0, 69% 0, 100% 100%, 0% 100%)",
                   borderRadius: "10% 10% 0 10%",
@@ -38,7 +38,7 @@ function BoardItem({
           }
         >
           <p className="py-14 w-28 text-white font-bold text-xl text-center truncate">
-            {redImage ? "" : redTitle}
+            {redImage !== "" ? "" : redTitle}
           </p>
         </div>
         <div className="text-center text-mainColor4 font-black text-2xl -translate-x-8 z-10">
@@ -47,7 +47,7 @@ function BoardItem({
         <div
           className={`w-1/2 bg-mainColor2 border-mainColor2 border-4 -translate-x-16`}
           style={
-            blueImage
+            blueImage !== ""
               ? {
                   clipPath: "polygon(0 0, 100% 0, 100% 100%, 31% 100%)",
                   borderRadius: "0 10% 10% 10%",
@@ -62,12 +62,12 @@ function BoardItem({
           }
         >
           <p className="py-14 w-28 text-white font-bold text-xl text-center truncate translate-x-7">
-            {blueImage ? "" : blueTitle}
+            {blueImage !== "" ? "" : blueTitle}
           </p>
         </div>
       </div>
-      <div className="mt-1 w-64 truncate">{title}</div>
-      <div className="w-64 truncate text-xs">
+      <div className="mt-1 w-64 truncate font-bold text-mainColor3 text-base hover:underline cursor-pointer">{title}</div>
+      <div className="w-64 truncate text-mainColor3 text-xs">
         by {author} &nbsp; {createDate}
       </div>
     </div>

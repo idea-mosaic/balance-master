@@ -20,7 +20,7 @@ function create() {
           className="absolute top-80 left-1/2 -translate-x-1/2"
         />
       </div>
-      <div className="float-right mt-2">
+      <div className="mt-2 flex justify-end">
         <PasswordPostSubmit />
       </div>
     </div>

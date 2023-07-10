@@ -6,6 +6,7 @@ interface Props {
   selectTitle?: string;
   selectDesc?: string;
   selectRatio?: number;
+  clickEvent?: () => void;
 }
 
 function ItemSelect({
@@ -14,10 +15,11 @@ function ItemSelect({
   selectTitle,
   selectDesc,
   selectRatio,
+  clickEvent,
 }: Props) {
   return (
     <div
-      className={`w-1/4 h-60 rounded-3xl border-4 ${BACKGROUND_COLORS[selectColor]} ${BORDER_COLORS[selectColor]}`}
+      className={`w-full h-96 rounded-3xl border-4 ${BACKGROUND_COLORS[selectColor]} ${BORDER_COLORS[selectColor]}`}
       style={
         selectImage
           ? {
@@ -27,9 +29,16 @@ function ItemSelect({
             }
           : {}
       }
+      onClick={clickEvent}
     >
-      <div className={"text-center text-white font-extrabold text-7xl mt-10"}>{selectTitle}</div>
-      <div className={"text-center text-white font-bold text-4xl mt-5"}>{selectRatio ? `${selectRatio}%` : selectDesc}</div>
+      <div className="h-96 flex flex-col justify-center gap-4">
+        <div className={"text-center text-white font-extrabold text-7xl"}>
+          {selectTitle}
+        </div>
+        <div className={"text-center text-white font-bold text-4xl"}>
+          {selectRatio ? `${selectRatio}%` : selectDesc}
+        </div>
+      </div>
     </div>
   );
 }

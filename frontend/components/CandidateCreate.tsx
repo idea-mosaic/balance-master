@@ -6,7 +6,7 @@ interface Props {
   color: "red" | "blue";
 }
 
-function Candidate({ color }: Props) {
+function CandidateCreate({ color }: Props) {
   return (
     <div className="flex flex-col gap-4 w-full">
       <ImageInput color={color} />
@@ -20,4 +20,4 @@ function Candidate({ color }: Props) {
   );
 }
 
-export default Candidate;
+export default CandidateCreate;

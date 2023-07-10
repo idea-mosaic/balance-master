@@ -1,4 +1,4 @@
-import Candidate from "@/components/Candidate";
+import CandidateCreate from "@/components/CandidateCreate";
 import PasswordPostSubmit from "@/components/PasswordPostSubmit";
 import TextInput from "@/components/TextInput";
 import Image from "next/image";
@@ -9,8 +9,8 @@ function create() {
       <div className="flex flex-col gap-8">
         <TextInput placeholder="게임의 제목을 입력해주세요" />
         <div className="flex gap-32">
-          <Candidate color="red" />
-          <Candidate color="blue" />
+          <CandidateCreate color="red" />
+          <CandidateCreate color="blue" />
         </div>
         <Image
           src="/assets/VSIcon.svg"

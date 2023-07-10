@@ -1,4 +1,3 @@
-import { BORDER_COLORS } from "@/constants/color";
 import { readFile } from "@/utils/readFile";
 import Image from "next/image";
 import React, { useState, ChangeEvent } from "react";
@@ -26,7 +25,7 @@ const ImageInput = ({ color }: Props) => {
 
   return (
     <div
-      className={`border-2 ${BORDER_COLORS[color]} w-full h-96 rounded-3xl flex justify-center items-center`}
+      className={`border-2 ${color} w-full h-96 rounded-3xl flex justify-center items-center`}
       style={
         previewImage
           ? {

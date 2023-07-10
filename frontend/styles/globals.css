@@ -55,4 +55,16 @@
   input.blue {
     @apply border-mainColor2;
   }
+
+  div {
+    @apply border-mainColor3;
+  }
+
+  div.red {
+    @apply border-mainColor1;
+  }
+
+  div.blue {
+    @apply border-mainColor2;
+  }
 }

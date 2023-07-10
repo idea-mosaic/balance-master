@@ -2,16 +2,23 @@ interface Props {
   placeholder?: string;
   color?: "red" | "blue";
   maxLength?: number;
+  label?: string;
+  type?: string;
 }
 
-function TextInput({ placeholder, color, maxLength }: Props) {
+function TextInput({ placeholder, color, maxLength, label, type }: Props) {
   return (
-    <input
-      type="text"
-      className={`border-2 rounded-lg p-2 w-full h-12 ${color}`}
-      placeholder={placeholder}
-      maxLength={maxLength}
-    />
+    <div>
+      {label ? <div className="p-2">{label}</div> : <></>}
+      <input
+        type={type}
+        className={`border-2 rounded-xl p-2 w-full ${
+          type === "password" ? "h-10" : "h-12"
+        } ${color}`}
+        placeholder={placeholder}
+        maxLength={maxLength}
+      />
+    </div>
   );
 }
 

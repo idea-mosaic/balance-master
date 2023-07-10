@@ -8,7 +8,7 @@ interface Props {
 function TextareaInput({ placeholder, color, maxLength, height }: Props) {
   return (
     <textarea
-      className={`border-2 rounded-lg p-2 w-full resize-none ${height} ${color}`}
+      className={`border-2 rounded-xl p-2 w-full resize-none ${height} ${color}`}
       placeholder={placeholder}
       maxLength={maxLength}
     />

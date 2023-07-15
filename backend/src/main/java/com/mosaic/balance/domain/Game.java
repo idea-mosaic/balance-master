@@ -1,5 +1,6 @@
 package com.mosaic.balance.domain;
 
+import com.mosaic.balance.dto.GameDTO;
 import com.mosaic.balance.util.BaseTimeEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,4 +46,15 @@ public class Game extends BaseTimeEntity {
     @OneToMany(mappedBy = "game",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments ;
 
+    public void modify(GameDTO.GameCreateDTO gameCreateDTO, String redImg, String blueImg) {
+        this.title = (gameCreateDTO.getTitle() == null) ? this.title : gameCreateDTO.getTitle();
+        this.red = (gameCreateDTO.getRed() == null) ? this.red : gameCreateDTO.getRed();
+        this.blue = (gameCreateDTO.getBlue() == null) ? this.blue : gameCreateDTO.getBlue();
+        this.redDescription = (gameCreateDTO.getRedDescription() == null) ?
+                this.redDescription : gameCreateDTO.getRedDescription();
+        this.blueDescription = (gameCreateDTO.getBlueDescription() == null) ?
+                this.blueDescription : gameCreateDTO.getBlueDescription();
+        this.redImg = (redImg == null) ? this.redImg : redImg;
+        this.blueImg = (blueImg == null) ? this.blueImg : blueImg;
+    }
 }

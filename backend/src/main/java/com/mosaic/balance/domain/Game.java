@@ -20,6 +20,8 @@ public class Game extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "game_seq")
     private long gameSeq;
+    @Column(name = "title")
+    private String title;
     @Column(name = "red")
     private String red;
     @Column(name="blue")

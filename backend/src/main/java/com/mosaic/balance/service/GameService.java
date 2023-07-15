@@ -1,7 +1,6 @@
 package com.mosaic.balance.service;
 
-import com.mosaic.balance.DTO.GameDTO;
-import com.mosaic.balance.domain.Game;
+import com.mosaic.balance.dto.GameDTO;
 
 public interface GameService {
 

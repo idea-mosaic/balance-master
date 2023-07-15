@@ -1,4 +1,4 @@
-package com.mosaic.balance.DTO;
+package com.mosaic.balance.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.LinkedList;
 
 public class GameDTO {
 

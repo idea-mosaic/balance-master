@@ -146,7 +146,4 @@ class GameServiceImplTest {
     /**
      * Mock repository
      */
-    private interface VoteRepository extends JpaRepository<Vote, Long> {
-        public boolean existsByVotePKGameGameSeqAndVotePKParticipantSeq(long gameId, long participantSeq);
-    }
 }

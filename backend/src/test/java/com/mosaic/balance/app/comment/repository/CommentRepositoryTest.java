@@ -40,6 +40,7 @@ public class CommentRepositoryTest {
                 .color(true)
                 .content("Test create comment Red")
                 .nickname("anony")
+                .pwd("test_pwd")
                 .game(game)
                 .build());
         ret.add(Comment.builder()
@@ -47,6 +48,7 @@ public class CommentRepositoryTest {
                 .color(false)
                 .content("Test create comment Blue")
                 .nickname("anony")
+                .pwd("test_pwd")
                 .game(game)
                 .build());
         return ret;
@@ -118,6 +120,20 @@ public class CommentRepositoryTest {
         assertThat(comments.get(0).isColor()).isFalse();
         assertThat(comments.get(0).getContent()).isEqualTo("Test create comment Blue");
     }
+    @Test
+    @Order(4)
+    public void updateComment() throws Exception{
+        final Comment comment = commentRepository.findById(2L).get();
+        final String modifiedContent = "test update content";
 
-
+        final Comment modifiedComment = Comment.builder()
+                .commentSeq(comment.getCommentSeq())
+                .color(comment.isColor())
+                .content(modifiedContent)
+                .pwd(comment.getPwd())
+                .nickname(comment.getNickname())
+                .build();
+        commentRepository.save(modifiedComment);
+        assertThat(commentRepository.findById(2L).get().getContent()).isEqualTo("test update content");
+    }
 }

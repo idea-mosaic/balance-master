@@ -9,13 +9,14 @@ public interface GameService {
      * @param gameCreateDTO
      * @return PK of created game and created Date
      */
-    public GameDTO.GameCreatedDTO createGame(GameDTO.GameCreateDTO gameCreateDTO);
+    public GameDTO.GameCreatedDTO createGame(GameDTO.GameCreateDTO gameCreateDTO) throws Exception;
 
     /**
      * Get Game details
      * @param gameId
      * @param userIdentifier might be IP address or user seq.
      * @return detail with/without result
+     * @throws java.util.NoSuchElementException if element not found
      */
     public GameDTO.GameDetailDTO gameDetail(long gameId, long userIdentifier);
 

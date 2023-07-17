@@ -162,7 +162,7 @@ class GameServiceImplTest {
     public void modifyGameTest() throws Exception{
         // given
         when(gameRepository.findById(anyLong()))
-                .thenReturn(Optional.of(Game.builder().build()));
+                .thenReturn(Optional.of(Game.builder().password("1234").build()));
 
         // when
         GameDTO.GameModifiedDTO result = gameService.modifyGame(123L, gameCreateDTO());
@@ -174,7 +174,8 @@ class GameServiceImplTest {
     @Test
     public void modifyGameImageTest() throws Exception{
         // given
-        when(gameRepository.findById(anyLong())).thenReturn(Optional.of(Game.builder().build()));
+        when(gameRepository.findById(anyLong()))
+                .thenReturn(Optional.of(Game.builder().password("1234").build()));
         doReturn("new_img_url").when(fileService).upload(any());
 
         // when
@@ -211,7 +212,9 @@ class GameServiceImplTest {
     public void modifyGameFailedWithFileTest() throws Exception {
         // given
         when(gameRepository.findById(anyLong()))
-                .thenReturn(Optional.of(Game.builder().redImg("original_image.png").build()));
+                .thenReturn(Optional.of(Game.builder()
+                                .password("1234")
+                                .redImg("original_image.png").build()));
         doThrow(Exception.class).when(fileService).upload(any());
 
         // when

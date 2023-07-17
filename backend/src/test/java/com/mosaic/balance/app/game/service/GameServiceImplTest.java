@@ -225,6 +225,74 @@ class GameServiceImplTest {
         // then
     }
 
+    /*
+    Delete
+        - success(correct pw)
+        - unauthorized
+        - not found
+        - failed to delete file
+     */
+    @Test
+    public void deleteGameTest() throws Exception {
+        // given
+        when(gameRepository.findById(anyLong()))
+                .thenReturn(Optional.of(Game.builder()
+                                .redImg("src_img.jpg")
+                                .password("1234").build()));
+        doReturn(1).when(fileService).delete(anyString());
+        doReturn(0).when(fileService).delete(null);
+
+        // when
+        int res = gameService.deleteGame(123L, "1234");
+
+        // then
+        assertEquals(0, res);
+    }
+
+    @Test
+    public void deleteGameWithIncorrectPWTest() throws Exception {
+        // given
+        when(gameRepository.findById(anyLong()))
+                .thenReturn(Optional.of(Game.builder().password("1234").build()));
+
+        // when & then
+        Assertions.assertThatThrownBy(() ->
+                gameService.deleteGame(123L, "password"))
+                .isInstanceOf(AccessDeniedException.class);
+
+    }
+
+    @Test
+    public void deleteGameNotFoundTest() throws Exception {
+        // given
+        when(gameRepository.findById(anyLong()))
+                .thenReturn(Optional.empty());
+
+        // when & then
+        Assertions.assertThatThrownBy(() ->
+                gameService.deleteGame(123L, "1234"))
+                .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
+    public void deleteGameFailedWithFileTest() throws Exception {
+        // given
+        when(gameRepository.findById(anyLong()))
+                .thenReturn(Optional.of(Game.builder()
+                                .redImg("src_image.jpg")
+                                .password("1234").build()));
+        doThrow(Exception.class).when(fileService).delete(anyString());
+
+        // when
+        Assertions.assertThatThrownBy(() ->
+                gameService.deleteGame(123L, "1234"))
+                .isInstanceOf(Exception.class);
+
+        // then
+        // check files still exists
+    }
+
+
     /**
      * Creates request DTO to create game
      * @return DTO

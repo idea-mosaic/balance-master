@@ -8,6 +8,7 @@ public interface GameService {
      * Create Game
      * @param gameCreateDTO
      * @return PK of created game and created Date
+     * @throws Exception when File UL fails [TBD]
      */
     public GameDTO.GameCreatedDTO createGame(GameDTO.GameCreateDTO gameCreateDTO) throws Exception;
 
@@ -24,7 +25,9 @@ public interface GameService {
      * Modify Game information
      * @param gameId
      * @param gameCreateDTO
-     * @return PK of created game and Created Date
+     * @return PK of created game, uploaded image url and Created Date
+     * @throws java.util.NoSuchElementException if not found
+     * @throws Exception when File UL/delete fails [TBD]
      */
     public GameDTO.GameModifiedDTO modifyGame(long gameId, GameDTO.GameCreateDTO gameCreateDTO) throws Exception;
 

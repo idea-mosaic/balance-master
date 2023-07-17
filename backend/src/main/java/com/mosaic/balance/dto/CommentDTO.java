@@ -44,11 +44,13 @@ public class CommentDTO {
 
     @Getter
     @NoArgsConstructor
-    public class ResponseReadDTO {
-        public ResponseReadDTO(List<Comment> comments){
-            comments.forEach(comment -> {
-                if(comment.isColor()) this.redComments.add(new CommentDTO(comment));
-                else this.blueComments.add(new CommentDTO(comment));
+    public static class ResponseReadDTO {
+        public ResponseReadDTO(List<Comment> commentsBlue, List<Comment> commentsRed){
+            commentsRed.forEach(comment -> {
+                this.redComments.add(new CommentDTO(comment));
+            });
+            commentsBlue.forEach(comment ->{
+                this.blueComments.add(new CommentDTO(comment));
             });
         }
         List<CommentDTO> redComments;
@@ -69,4 +71,11 @@ public class CommentDTO {
         private String content;
         private String pw;
     }
+
+    @Getter
+    @Builder
+    public static class RequestDeleteDTO{
+        private String pw;
+    }
+
 }

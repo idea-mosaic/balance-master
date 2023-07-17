@@ -36,6 +36,16 @@ public class GameDTO {
     @Getter
     @Builder
     @AllArgsConstructor
+    public static class GameModifiedDTO {
+        private long gameId;
+        private String redImg;
+        private String blueImg;
+        private LocalDateTime createdDate;
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
     public static class GameThumbnailDTO {
         private long gameId;
         private String title;

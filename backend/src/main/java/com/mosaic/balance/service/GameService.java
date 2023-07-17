@@ -26,7 +26,7 @@ public interface GameService {
      * @param gameCreateDTO
      * @return PK of created game and Created Date
      */
-    public GameDTO.GameCreatedDTO modifyGame(long gameId, GameDTO.GameCreateDTO gameCreateDTO);
+    public GameDTO.GameModifiedDTO modifyGame(long gameId, GameDTO.GameCreateDTO gameCreateDTO) throws Exception;
 
     /**
      * Delete Game

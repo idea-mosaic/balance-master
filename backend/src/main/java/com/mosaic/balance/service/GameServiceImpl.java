@@ -5,8 +5,10 @@ import com.mosaic.balance.dto.GameDTO;
 import com.mosaic.balance.repository.GameRepository;
 import com.mosaic.balance.repository.VoteRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.CannotCreateTransactionException;
 
@@ -95,8 +97,51 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public GameDTO.GameCreatedDTO modifyGame(long gameId, GameDTO.GameCreateDTO gameCreateDTO) {
-        return null;
+    public GameDTO.GameModifiedDTO modifyGame(long gameId, GameDTO.GameCreateDTO gameCreateDTO) throws Exception {
+        logger.info("Modify Game : {}", gameId);
+        // throws NoSuchElementException
+        Game game = gameRepository.findById(gameId).get();
+
+        // AUTH check
+        if(game.getPassword() != null && (!game.getPassword().equals(gameCreateDTO.getPw()))) {
+            logger.info("Incorrect Password : {}", gameCreateDTO.getPw());
+            throw new AccessDeniedException("Incorrect password");
+        }
+        // also AUTH check for users
+
+        String redImgUrl = game.getRedImg();
+        String blueImgUrl = game.getBlueImg();
+        String newRedImgUrl = null;
+        String newBlueImgUrl = null;
+
+        if(gameCreateDTO.getRedImg() != null) {
+            newRedImgUrl = fileService.upload(gameCreateDTO.getRedImg());
+            logger.info("new file for Red uploaded : {}", newRedImgUrl);
+        }
+        if(gameCreateDTO.getBlueImg() != null) {
+            newBlueImgUrl = fileService.upload(gameCreateDTO.getBlueImg());
+            logger.info("new file for Blue uploaded : {}", newRedImgUrl);
+        }
+
+        try {
+            game.modify(gameCreateDTO, newRedImgUrl, newBlueImgUrl);
+            gameRepository.save(game);
+        } catch (IllegalArgumentException e) {
+            logger.info("Failed to Update Entity\n Caused by : {}", e.getCause());
+            fileService.delete(newRedImgUrl);
+            fileService.delete(newBlueImgUrl);
+        }
+
+        logger.info("Successfully Updated Entity, delete old files");
+        fileService.delete(redImgUrl);
+        fileService.delete(blueImgUrl);
+
+        return GameDTO.GameModifiedDTO.builder()
+                .gameId(game.getGameSeq())
+                .redImg(newRedImgUrl)
+                .blueImg(newBlueImgUrl)
+                .createdDate(game.getCreatedTime())
+                .build();
     }
 
     @Override

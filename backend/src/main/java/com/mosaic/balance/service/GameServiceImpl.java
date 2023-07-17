@@ -12,6 +12,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.CannotCreateTransactionException;
 
+import javax.transaction.Transactional;
+
 @Service
 @RequiredArgsConstructor
 public class GameServiceImpl implements GameService {
@@ -145,7 +147,35 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public int deleteGame(long gameId, String pw) {
+    @Transactional(rollbackOn = Exception.class)
+    public int deleteGame(long gameId, String pw) throws Exception {
+        logger.info("delete game : {}", gameId);
+
+        //throws NoSuchElementException
+        Game game = gameRepository.findById(gameId).get();
+
+        // AUTH check
+        if(game.getPassword() != null && (!game.getPassword().equals(pw))) {
+            logger.info("Incorrect Password : {}", pw);
+            throw new AccessDeniedException("Incorrect password");
+        }
+        // also AUTH check for users
+
+        gameRepository.delete(game);
+
+        try {
+            logger.info("delete files : {}, {}", game.getRedImg(), game.getBlueImg());
+            int deleted = 0;
+            deleted +=
+                fileService.delete(game.getRedImg());
+            deleted +=
+                fileService.delete(game.getBlueImg());
+
+        } catch (Exception e) {
+            logger.info("Failed to delete file, ROLLBACK\nCaused by : {}", e.getCause());
+            throw e;
+        }
+
         return 0;
     }
 }

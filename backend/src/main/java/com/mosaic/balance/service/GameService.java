@@ -36,6 +36,9 @@ public interface GameService {
      * @param gameId
      * @param pw
      * @return 0 for success
+     * @throws java.util.NoSuchElementException if not found
+     * @throws org.springframework.security.access.AccessDeniedException unauthorized user
+     * @throws Exception when File UL/delete fails [TBD]
      */
-    public int deleteGame(long gameId, String pw);
+    public int deleteGame(long gameId, String pw) throws Exception;
 }

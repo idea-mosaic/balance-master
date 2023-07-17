@@ -53,6 +53,9 @@ public class CommentServiceTest {
             .content(content)
             .pw("Incorrect PWD")
             .build();
+    private CommentDTO.RequestDeleteDTO requestDeleteDTO = CommentDTO.RequestDeleteDTO.builder()
+            .pw("Incorrect PWD")
+            .build();
 
     public Game makeGameEntity(){
         return Game.builder()
@@ -93,12 +96,15 @@ public class CommentServiceTest {
         doReturn(Optional.of(comment)).when(commentRepository).findById(commentSeq);
 
         //when
-        final CommentException result = assertThrows(
+        final CommentException resultUpdate = assertThrows(
                 CommentException.class,
                 ()-> commentService.updateComment(gameSeq,commentSeq,requestUpdateDTO));
-
+        final CommentException resultDelete = assertThrows(
+                CommentException.class,
+                ()-> commentService.deleteComment(commentSeq,requestDeleteDTO));
         //then
-        assertThat(result.getErrorResult()).isEqualTo(CommentErrorResult.PWD_INCORRECT);
+        assertThat(resultUpdate.getErrorResult()).isEqualTo(CommentErrorResult.PWD_INCORRECT);
+        assertThat(resultDelete.getErrorResult()).isEqualTo(CommentErrorResult.PWD_INCORRECT);
     }
 
     @Test

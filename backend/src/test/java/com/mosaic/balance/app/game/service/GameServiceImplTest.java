@@ -40,7 +40,8 @@ class GameServiceImplTest {
 
     /*
     Create
-        - success
+        - success(without image)
+        - success(with image)
         - failed to upload image
         - failed to create entity
      */
@@ -50,13 +51,26 @@ class GameServiceImplTest {
         // thenReturn : execute & return
         when(gameRepository.save(any(Game.class))).thenReturn(Game.builder().gameSeq(32L).build());
         // doReturn : return without executing
-        doReturn("img_url").when(fileService).upload(any());
+//        doReturn("img_url").when(fileService).upload(any());
 
         // when
         GameDTO.GameCreatedDTO result = gameService.createGame(gameCreateDTO());
 
         // then
         assertNotNull(result);
+        assertEquals(result.getGameId(), 32L);
+    }
+
+    @Test
+    public void createGameWithImgTest() throws Exception {
+        // given
+        when(gameRepository.save(any(Game.class))).thenReturn(Game.builder().gameSeq(32L).build());
+        doReturn("img_url.jpg").when(fileService).upload(any(MultipartFile.class));
+
+        // when
+        GameDTO.GameCreatedDTO result = gameService.createGame(gameCreateWithImageDTO());
+
+        // then
         assertEquals(result.getGameId(), 32L);
     }
 

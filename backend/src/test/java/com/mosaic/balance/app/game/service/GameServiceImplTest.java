@@ -15,7 +15,11 @@ import org.mockito.Mock;
 import static org.mockito.Mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.transaction.CannotCreateTransactionException;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -130,6 +134,80 @@ class GameServiceImplTest {
 
     }
 
+    /*
+    Modify
+        - success(without image)
+        - success(with image) [YET]
+        - unauthorized(incorrect password)
+        - unauthorized(user) [TBD]
+        - game not found
+        - delete file(s) [TBD]
+        - failed with images [YET]
+     */
+    @Test
+    public void modifyGameTest() throws Exception{
+        // given
+        when(gameRepository.findById(anyLong()))
+                .thenReturn(Optional.of(Game.builder().build()));
+
+        // when
+        GameDTO.GameModifiedDTO result = gameService.modifyGame(123L, gameCreateDTO());
+
+        // then
+        assertNotNull(result);
+    }
+
+    @Test
+    public void modifyGameImageTest() throws Exception{
+        // given
+        when(gameRepository.findById(anyLong())).thenReturn(Optional.of(Game.builder().build()));
+        doReturn("new_img_url").when(fileService).upload(any());
+
+        // when
+        GameDTO.GameModifiedDTO result = gameService.modifyGame(123L, gameCreateWithImageDTO());
+
+        // then
+        assertNotNull(result);
+        assertEquals(result.getRedImg(), "new_img_url");
+        // check whether file has been deleted
+    }
+
+    @Test
+    public void modifyGameWithIncorrectPWTest() {
+        // given
+        when(gameRepository.findById(anyLong()))
+                .thenReturn(Optional.of(Game.builder().password("password").build()));
+
+        // when & then
+        Assertions.assertThatThrownBy(() -> gameService.modifyGame(123L, gameCreateDTO()))
+                .isInstanceOf(AccessDeniedException.class);
+    }
+
+    @Test
+    public void modifyGameNotFoundTest() {
+        // given
+        when(gameRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        // when & then
+        Assertions.assertThatThrownBy(() -> gameService.modifyGame(123L, gameCreateDTO()))
+                .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
+    public void modifyGameFailedWithFileTest() throws Exception {
+        // given
+        when(gameRepository.findById(anyLong()))
+                .thenReturn(Optional.of(Game.builder().redImg("original_image.png").build()));
+        doThrow(Exception.class).when(fileService).upload(any());
+
+        // when
+        Assertions.assertThatThrownBy(() ->
+                gameService.modifyGame(12345L, gameCreateWithImageDTO()))
+                .isInstanceOf(Exception.class);
+
+        // then
+    }
+
     /**
      * Creates request DTO to create game
      * @return DTO
@@ -141,6 +219,17 @@ class GameServiceImplTest {
                         .blue("blue").blueDescription("BLUE")
                         .pw("1234")
                         .build();
+    }
+
+    private GameDTO.GameCreateDTO gameCreateWithImageDTO() {
+        return GameDTO.GameCreateDTO.builder()
+                .title("red vs. blue")
+                .red("red").redDescription("RED")
+                .blue("blue").blueDescription("BLUE")
+                .redImg(new MockMultipartFile("red.jpg", new byte[0]))
+                .blueImg(new MockMultipartFile("blue.png", new byte[0]))
+                .pw("1234")
+                .build();
     }
 
     /**

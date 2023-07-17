@@ -1,4 +1,5 @@
 interface Props {
+  boardId: number;
   redImage?: string;
   blueImage?: string;
   redTitle?: string;
@@ -9,6 +10,7 @@ interface Props {
 }
 
 function BoardItem({
+  boardId,
   redImage,
   blueImage,
   redTitle,
@@ -19,7 +21,7 @@ function BoardItem({
 }: Props) {
   return (
     <div className="flex flex-col w-80 m-0 cursor-pointer">
-      <div className="flex h-36  hover:scale-110 transition-transform ease-in-out duration-700">
+      <div className="flex h-36  hover:scale-105 transition-transform ease-in-out duration-700">
         <div
           className={`w-1/2 bg-mainColor1 border-mainColor1 border-4`}
           style={

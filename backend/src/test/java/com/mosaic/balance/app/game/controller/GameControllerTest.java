@@ -28,6 +28,7 @@ import com.google.gson.Gson;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -155,14 +156,67 @@ public class GameControllerTest {
         // then
         result.andExpect(status().isInternalServerError());
     }
+
     /*
     Detail
         - success(played)
-        - success(DNP)
+        - success(DNP) [UNNECESSARY]
         - Not found
         - required header is absent
      */
+    @Test
+    public void detailGameTest() throws Exception {
+        // given
+        String url = "/games/123";
+        when(gameService.gameDetail(anyLong(), anyLong()))
+                .thenReturn(GameDTO.GameDetailResponseDTO.builder()
+                        .game(GameDTO.GameDetailDTO.builder().gameId(49L).build())
+                        .build());
 
+        // when
+        ResultActions result = mockMvc.perform(
+                MockMvcRequestBuilders.get(url)
+                        .header("X-Forwarded-For", "192.168.0.1")
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        result.andExpect(status().isOk());
+        GameDTO.GameDetailResponseDTO gameDetailResponseDTO = responseToDTO(result, GameDTO.GameDetailResponseDTO.class);
+        assertNotNull(gameDetailResponseDTO);
+        assertEquals(49L, gameDetailResponseDTO.getGame().getGameId());
+    }
+
+    @Test
+    public void detailGameNotFoundTest() throws Exception {
+        // given
+        String url = "/games/123";
+        when(gameService.gameDetail(anyLong(), anyLong()))
+                .thenThrow(NoSuchElementException.class);
+
+        // when
+        ResultActions result = mockMvc.perform(
+                MockMvcRequestBuilders.get(url)
+                        .header("X-Forwarded-For", "192.168.0.1")
+        );
+
+        // then
+        result.andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void detailGameWithoutUserIdentifierTest() throws Exception {
+        // given
+        String url = "/games/123";
+
+        // when
+        ResultActions result = mockMvc.perform(
+                MockMvcRequestBuilders.get(url)
+        );
+
+        // then
+        result.andExpect(status().isUnauthorized());
+    }
     /*
     Modify
         - success(file)

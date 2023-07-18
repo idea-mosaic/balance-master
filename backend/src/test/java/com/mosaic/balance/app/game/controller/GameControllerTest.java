@@ -296,11 +296,90 @@ public class GameControllerTest {
 
     /*
     Delete
-        - success
+        - success(password)
+        - success(user) [TBD]
         - Not found
         - Unauthorized
         - 500
      */
+    @Test
+    public void deleteGameTest() throws Exception {
+        // given
+        String url = "/games/123";
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("pw", "password");
+        when(gameService.deleteGame(anyLong(), anyString()))
+                .thenReturn(0);
+
+        // when
+        ResultActions result = mockMvc.perform(
+                MockMvcRequestBuilders.delete(url)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(gson.toJson(requestBody))
+        );
+
+        // then
+        result.andExpect(status().isOk());
+    }
+    @Test
+    public void deleteGameNotFoundTest() throws Exception {
+        // given
+        String url = "/games/123";
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("pw", "password");
+        when(gameService.deleteGame(anyLong(), anyString()))
+                .thenThrow(NoSuchElementException.class);
+
+        // when
+        ResultActions result = mockMvc.perform(
+                MockMvcRequestBuilders.delete(url)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(gson.toJson(requestBody))
+        );
+
+        // then
+        result.andExpect(status().isOk());
+    }
+    @Test
+    public void deleteGameUnauthorizedTest() throws Exception {
+        // given
+        String url = "/games/123";
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("pw", "password");
+        when(gameService.deleteGame(anyLong(), anyString()))
+                .thenThrow(AccessDeniedException.class);
+
+        // when
+        ResultActions result = mockMvc.perform(
+                MockMvcRequestBuilders.delete(url)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(gson.toJson(requestBody))
+        );
+
+        // then
+        result.andExpect(status().isUnauthorized());
+    }
+    @Test
+    public void deleteGameFailedWithFileTest() throws Exception {
+        // given
+        String url = "/games/123";
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("pw", "password");
+        when(gameService.deleteGame(anyLong(), anyString()))
+                .thenThrow(Exception.class);
+
+        // when
+        ResultActions result = mockMvc.perform(
+                MockMvcRequestBuilders.delete(url)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(gson.toJson(requestBody))
+        );
+
+        // then
+        result.andExpect(status().isInternalServerError());
+    }
+
+
 
     /**
      * Create DTO without file

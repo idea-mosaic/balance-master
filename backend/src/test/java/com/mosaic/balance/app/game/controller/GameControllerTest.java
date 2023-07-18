@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -72,19 +73,10 @@ public class GameControllerTest {
         // given
         String url = "/games";
         GameDTO.GameCreateDTO gameCreateDTO = createGameDTO();
-//        Map<String, Object> requestBody = new HashMap<>();
-//        requestBody.put("gameInfo", gameCreateDTO);
 
         when(gameService.createGame(any(GameDTO.GameCreateDTO.class)))
                 .thenReturn(GameDTO.GameCreatedDTO.builder().gameId(123).build());
 
-        // when
-//        ResultActions result = mockMvc.perform(
-//                MockMvcRequestBuilders.post(url)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(gson.toJson(requestBody))
-//                        .characterEncoding("UTF-8")
-//        );
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders.multipart(HttpMethod.POST, url)
                         .file(new MockMultipartFile("gameInfo", "", MediaType.APPLICATION_JSON_VALUE, gson.toJson(gameCreateDTO).getBytes("UTF8")))
@@ -220,11 +212,87 @@ public class GameControllerTest {
     /*
     Modify
         - success(file)
-        - success(without file)
         - Not found
         - Unauthorized
+        - BR() [TBD]
         - 500
      */
+    @Test
+    public void modifyGameTest() throws Exception {
+        // given
+        String url = "/games/123";
+        GameDTO.GameCreateDTO gameCreateDTO = createGameDTO();
+        when(gameService.modifyGame(anyLong(), any(GameDTO.GameCreateDTO.class)))
+                .thenReturn(GameDTO.GameModifiedDTO.builder().build());
+
+        // when
+        ResultActions result = mockMvc.perform(
+                MockMvcRequestBuilders.multipart(HttpMethod.PATCH, url)
+                        .file(new MockMultipartFile("redImg", "redImg.png", MediaType.MULTIPART_FORM_DATA_VALUE, new byte[2]))
+                        .file(new MockMultipartFile("redImg", "redImg.png", MediaType.MULTIPART_FORM_DATA_VALUE, new byte[2]))
+                        .file(new MockMultipartFile("gameInfo", "", MediaType.APPLICATION_JSON_VALUE, gson.toJson(gameCreateDTO).getBytes()))
+        );
+
+        // then
+        result.andExpect(status().isOk());
+    }
+    @Test
+    public void modifyGameNotFoundTest() throws Exception {
+        // given
+        String url = "/games/123";
+        GameDTO.GameCreateDTO gameCreateDTO = createGameDTO();
+        when(gameService.modifyGame(anyLong(), any(GameDTO.GameCreateDTO.class)))
+                .thenThrow(NoSuchElementException.class);
+
+        // when
+        ResultActions result = mockMvc.perform(
+                MockMvcRequestBuilders.multipart(HttpMethod.PATCH, url)
+                        .file(new MockMultipartFile("redImg", "redImg.png", MediaType.MULTIPART_FORM_DATA_VALUE, new byte[2]))
+                        .file(new MockMultipartFile("redImg", "redImg.png", MediaType.MULTIPART_FORM_DATA_VALUE, new byte[2]))
+                        .file(new MockMultipartFile("gameInfo", "", MediaType.APPLICATION_JSON_VALUE, gson.toJson(gameCreateDTO).getBytes()))
+        );
+
+        // then
+        result.andExpect(status().isNotFound());
+    }
+    @Test
+    public void modifyGameUnauthorizedTest() throws Exception {
+        // given
+        String url = "/games/123";
+        GameDTO.GameCreateDTO gameCreateDTO = createGameDTO();
+        when(gameService.modifyGame(anyLong(), any(GameDTO.GameCreateDTO.class)))
+                .thenThrow(AccessDeniedException.class);
+
+        // when
+        ResultActions result = mockMvc.perform(
+                MockMvcRequestBuilders.multipart(HttpMethod.PATCH, url)
+                        .file(new MockMultipartFile("redImg", "redImg.png", MediaType.MULTIPART_FORM_DATA_VALUE, new byte[2]))
+                        .file(new MockMultipartFile("redImg", "redImg.png", MediaType.MULTIPART_FORM_DATA_VALUE, new byte[2]))
+                        .file(new MockMultipartFile("gameInfo", "", MediaType.APPLICATION_JSON_VALUE, gson.toJson(gameCreateDTO).getBytes()))
+        );
+
+        // then
+        result.andExpect(status().isUnauthorized());
+    }
+    @Test
+    public void modifyGameFailedWithFileTest() throws Exception {
+        // given
+        String url = "/games/123";
+        GameDTO.GameCreateDTO gameCreateDTO = createGameDTO();
+        when(gameService.modifyGame(anyLong(), any(GameDTO.GameCreateDTO.class)))
+                .thenThrow(Exception.class);
+
+        // when
+        ResultActions result = mockMvc.perform(
+                MockMvcRequestBuilders.multipart(HttpMethod.PATCH, url)
+                        .file(new MockMultipartFile("redImg", "redImg.png", MediaType.MULTIPART_FORM_DATA_VALUE, new byte[2]))
+                        .file(new MockMultipartFile("redImg", "redImg.png", MediaType.MULTIPART_FORM_DATA_VALUE, new byte[2]))
+                        .file(new MockMultipartFile("gameInfo", "", MediaType.APPLICATION_JSON_VALUE, gson.toJson(gameCreateDTO).getBytes()))
+        );
+
+        // then
+        result.andExpect(status().isInternalServerError());
+    }
 
     /*
     Delete

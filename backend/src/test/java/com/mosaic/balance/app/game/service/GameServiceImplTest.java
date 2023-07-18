@@ -115,7 +115,7 @@ class GameServiceImplTest {
         //
 
         // when
-        GameDTO.GameDetailDTO result = gameService.gameDetail(1L, 192168000001L);
+        GameDTO.GameDetailResponseDTO result = gameService.gameDetail(1L, 192168000001L);
 
         // then
         assertNotNull(result);
@@ -130,7 +130,7 @@ class GameServiceImplTest {
                 .thenReturn(true);
 
         // when
-        GameDTO.GameDetailDTO result = gameService.gameDetail(1L, 127168000001L);
+        GameDTO.GameDetailResponseDTO result = gameService.gameDetail(1L, 127168000001L);
 
         // then
         assertNotNull(result);

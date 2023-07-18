@@ -19,7 +19,7 @@ public interface GameService {
      * @return detail with/without result
      * @throws java.util.NoSuchElementException if element not found
      */
-    public GameDTO.GameDetailDTO gameDetail(long gameId, long userIdentifier);
+    public GameDTO.GameDetailResponseDTO gameDetail(long gameId, long userIdentifier);
 
     /**
      * Modify Game information

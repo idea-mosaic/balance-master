@@ -65,22 +65,25 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public GameDTO.GameDetailDTO gameDetail(long gameId, long userIdentifier) {
+    public GameDTO.GameDetailResponseDTO gameDetail(long gameId, long userIdentifier) {
         logger.info("Get game detail : {}", gameId);
         // throws NoSuchElementException
         Game game = gameRepository.findById(gameId).get();
 
-        GameDTO.GameDetailDTO.GameDetailDTOBuilder builder =
-                GameDTO.GameDetailDTO.builder()
-                        .gameId(game.getGameSeq())
-                        .title(game.getTitle())
-                        .red(game.getRed())
-                        .blue(game.getBlue())
-                        .redDescription(game.getRedDescription())
-                        .blueDescription(game.getBlueDescription())
-                        .redImg(game.getRedImg())
-                        .blueImg(game.getBlueImg())
-                        .createdDate(game.getCreatedTime());
+        GameDTO.GameDetailResponseDTO.GameDetailResponseDTOBuilder builder =
+                GameDTO.GameDetailResponseDTO.builder().game(
+                        GameDTO.GameDetailDTO.builder()
+                                .gameId(game.getGameSeq())
+                                .title(game.getTitle())
+                                .red(game.getRed())
+                                .blue(game.getBlue())
+                                .redDescription(game.getRedDescription())
+                                .blueDescription(game.getBlueDescription())
+                                .redImg(game.getRedImg())
+                                .blueImg(game.getBlueImg())
+                                .createdDate(game.getCreatedTime())
+                                .build()
+                );
 
         if(voteRepository.existsByVotePKGameGameSeqAndVotePKParticipantSeq(gameId, userIdentifier)) {
             int totalCnt = game.getRedCnt() + game.getBlueCnt();

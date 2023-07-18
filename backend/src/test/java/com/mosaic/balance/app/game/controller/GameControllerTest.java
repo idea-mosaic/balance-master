@@ -5,9 +5,13 @@ import com.mosaic.balance.controller.GameController;
 import com.mosaic.balance.dto.GameDTO;
 import com.mosaic.balance.service.GameService;
 import jdk.jfr.ContentType;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -24,6 +28,7 @@ import com.google.gson.Gson;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -57,8 +62,8 @@ public class GameControllerTest {
     Create
         - success(without file)
         - success(file)
-        - BR(absent)
-        - BR(contents too long)
+        - BR(absent) [TBD]
+        - BR(contents too long) [TDB]
         - 500
      */
     @Test
@@ -118,6 +123,37 @@ public class GameControllerTest {
 
         assertNotNull(gameCreatedDTO);
         assertTrue(gameCreatedDTO.getGameId() == 123L);
+    }
+
+//    @ParameterizedTest
+//    @MethodSource("gameCreateDTOStream")
+//    public void createGameWithInAdequateParam(GameDTO.GameCreateDTO gameCreateDTO) throws Exception {
+//        assertNotNull(gameCreateDTO);
+//    }
+//
+//    private static Stream<Arguments> gameCreateDTOStream() {
+//        return Stream.of(
+//                Arguments.of(GameDTO.GameCreateDTO.builder().build())
+//        );
+//    }
+
+    @Test
+    public void createGameFailedWithFile() throws Exception {
+        // given
+        String url = "/games";
+        GameDTO.GameCreateDTO gameCreateDTO = createGameDTO();
+        when(gameService.createGame(any(GameDTO.GameCreateDTO.class)))
+                .thenThrow(Exception.class);
+        // when
+        ResultActions result = mockMvc.perform(
+                MockMvcRequestBuilders.multipart(HttpMethod.POST, url)
+                        .file(new MockMultipartFile("redImg", "redImg.png", MediaType.MULTIPART_FORM_DATA_VALUE, new byte[1]))
+                        .file(new MockMultipartFile("blueImg", "blueImg.png", MediaType.MULTIPART_FORM_DATA_VALUE, new byte[1]))
+                        .file(new MockMultipartFile("gameInfo", "", MediaType.APPLICATION_JSON_VALUE, gson.toJson(gameCreateDTO).getBytes()))
+        );
+
+        // then
+        result.andExpect(status().isInternalServerError());
     }
     /*
     Detail

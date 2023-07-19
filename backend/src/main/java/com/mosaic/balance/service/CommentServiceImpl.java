@@ -36,10 +36,10 @@ public class CommentServiceImpl implements CommentService{
     }
 
     @Override
-    public CommentDTO.ResponseReadDTO getComments(long gameSeq, int startRed, int sizeRed, int startBlue, int sizeBlue) {
+    public CommentDTO.ResponseReadDTO getComments(long gameSeq, CommentDTO.RequestReadDTO requestDTO) {
         Game game = gameRepository.findById(gameSeq).orElseThrow(()-> new CommentException(CommentErrorResult.GAME_NOT_EXIST));
-        PageRequest pageRequestRed = PageRequest.of(startRed,sizeRed);
-        PageRequest pageRequestBlue = PageRequest.of(startBlue,sizeBlue);
+        PageRequest pageRequestRed = PageRequest.of(requestDTO.getRedPageNo(), requestDTO.getRedPageSize());
+        PageRequest pageRequestBlue = PageRequest.of(requestDTO.getBluePageNo(),requestDTO.getBluePageSize());
         List<Comment> commentsRed = commentRepository.findByGameAndColor(game,true, pageRequestRed);
         List<Comment> commentsBlue = commentRepository.findByGameAndColor(game, false, pageRequestBlue);
         CommentDTO.ResponseReadDTO responseReadDTO = new CommentDTO.ResponseReadDTO(commentsBlue,commentsRed);

@@ -6,9 +6,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class CommentDTO {
     public CommentDTO(Comment comment){
         this.commentSeq = comment.getCommentSeq();
@@ -38,25 +43,37 @@ public class CommentDTO {
     public static class RequestCreateDTO{
         private boolean choice;
         private String content;
+        @NotEmpty
         private String pw;
         private String nickname;
     }
 
     @Getter
     @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RequestReadDTO{
+        private int redPageNo;
+        private int redPageSize;
+        private int bluePageNo;
+        private int bluePageSize;
+    }
+    @Getter
+    @NoArgsConstructor
     public static class ResponseReadDTO {
         public ResponseReadDTO(List<Comment> commentsBlue, List<Comment> commentsRed){
-            commentsRed.forEach(comment -> {
-                this.redComments.add(new CommentDTO(comment));
-            });
-            commentsBlue.forEach(comment ->{
-                this.blueComments.add(new CommentDTO(comment));
-            });
+            this.redComments = commentsRed.stream()
+                    .map(comment -> new CommentDTO(comment))
+                    .collect(Collectors.toList());
+            this.blueComments = commentsBlue.stream()
+                    .map(comment -> new CommentDTO(comment))
+                    .collect(Collectors.toList());
         }
         List<CommentDTO> redComments;
         List<CommentDTO> blueComments;
     }
     @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class ResponseUpdateDTO {
         public ResponseUpdateDTO(Comment comment){
             this.commentSeq = comment.getCommentSeq();
@@ -66,15 +83,18 @@ public class CommentDTO {
         private LocalDateTime updatedTime;
     }
     @Getter
-    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class RequestUpdateDTO{
         private String content;
         private String pw;
     }
 
     @Getter
-    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class RequestDeleteDTO{
+        @NotEmpty
         private String pw;
     }
 

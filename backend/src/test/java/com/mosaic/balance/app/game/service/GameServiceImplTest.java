@@ -233,7 +233,7 @@ class GameServiceImplTest {
         - success(correct pw)
         - unauthorized
         - not found
-        - failed to delete file
+        - failed to delete file [Unable to get result from s3.deleteObject()]
      */
     @Test
     public void deleteGameTest() throws Exception {
@@ -274,24 +274,6 @@ class GameServiceImplTest {
         Assertions.assertThatThrownBy(() ->
                 gameService.deleteGame(123L, "1234"))
                 .isInstanceOf(NoSuchElementException.class);
-    }
-
-    @Test
-    public void deleteGameFailedWithFileTest() throws Exception {
-        // given
-        when(gameRepository.findById(anyLong()))
-                .thenReturn(Optional.of(Game.builder()
-                                .redImg("src_image.jpg")
-                                .password("1234").build()));
-        doThrow(IOException.class).when(fileService).delete(anyString());
-
-        // when
-        Assertions.assertThatThrownBy(() ->
-                gameService.deleteGame(123L, "1234"))
-                .isInstanceOf(IOException.class);
-
-        // then
-        // check files still exists
     }
 
 

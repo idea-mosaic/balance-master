@@ -1,6 +1,7 @@
 package com.mosaic.balance.app.game.service;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.DeleteObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectResult;
@@ -118,7 +119,7 @@ class S3ServiceImplTest {
     Delete
         - single url
         - multiple urls
-        - no url
+        - not found : AmazonS3.deleteObject does not return any results
      */
 
 }

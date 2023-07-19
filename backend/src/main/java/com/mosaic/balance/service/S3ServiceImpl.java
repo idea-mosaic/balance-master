@@ -70,12 +70,27 @@ public class S3ServiceImpl implements FileService {
 
     @Override
     public int delete(String imageUrl) {
+        try {
+            deleteFile(imageUrl);
+        } catch (UnsupportedEncodingException | ArrayIndexOutOfBoundsException e) {
+            return -1;
+        }
         return 0;
     }
 
     @Override
     public int delete(String[] imageUrls) {
-        return 0;
+        int len = imageUrls.length;
+        int ret = 0;
+        for(int i=0; i<len; i++) {
+            try {
+                deleteFile(imageUrls[i]);
+            } catch (UnsupportedEncodingException | ArrayIndexOutOfBoundsException e) {
+                ret = -1;
+            }
+        }
+
+        return ret;
     }
 
     /**
@@ -88,8 +103,8 @@ public class S3ServiceImpl implements FileService {
      * @throws AmazonServiceException : S3 error
      */
     private String uploadFile(MultipartFile multipartFile, String dirName) throws IOException {
-        String filePath = dirName + "/" + UUID.randomUUID() + "-" + multipartFile.getName();
-        logger.info("Upload File as : {}", dirName);
+        String filePath = dirName + "/" + UUID.randomUUID() + "-" + multipartFile.getOriginalFilename();
+        logger.info("Upload File as : {}", filePath);
 
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(multipartFile.getInputStream().available());
@@ -99,6 +114,23 @@ public class S3ServiceImpl implements FileService {
         logger.info("Successfully uploaded file : {} bytes", multipartFile.getSize());
 
         return amazonS3.getUrl(bucket, filePath).toString();
+    }
+
+    /**
+     * Delete file of S3 server
+     * @param fileURL File url
+     * @throws UnsupportedEncodingException wrong input
+     * @throws ArrayIndexOutOfBoundsException wrong input
+     */
+    private void deleteFile(String fileURL) throws UnsupportedEncodingException, ArrayIndexOutOfBoundsException {
+        String[] urlParts = fileURL.split("/", 4);
+        String fileName = urlParts[3];
+
+        logger.info("Delete file : {}", fileName);
+        String objKey = URLDecoder.decode(fileName, "UTF-8").trim();
+        logger.info("Delete object : {}", objKey);
+        DeleteObjectRequest request = new DeleteObjectRequest(bucket, objKey);
+        amazonS3.deleteObject(request);
     }
 
     /**

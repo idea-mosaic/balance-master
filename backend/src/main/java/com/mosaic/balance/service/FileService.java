@@ -30,8 +30,18 @@ public interface FileService {
      */
     public String[] upload(MultipartFile[] multipartFiles, String dirName) throws IllegalArgumentException, IOException, SdkClientException;
 
+    /**
+     * Delete single file
+     * @param imageUrl file url including bucket
+     * @return 0 : success. -1 : failed - wrong input
+     */
     public int delete(String imageUrl);
 
+    /**
+     * Delete multiple files
+     * @param imageUrls Array of file urls. including bucket
+     * @return 0 : success. -1 : failed - wrong input
+     */
     public int delete(String[] imageUrls);
 
 }

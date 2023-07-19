@@ -49,13 +49,9 @@ public class CommentServiceTest {
             .content(content)
             .pw(pwd)
             .build();
-    private CommentDTO.RequestUpdateDTO requestUpdateDTO = CommentDTO.RequestUpdateDTO.builder()
-            .content(content)
-            .pw("Incorrect PWD")
-            .build();
-    private CommentDTO.RequestDeleteDTO requestDeleteDTO = CommentDTO.RequestDeleteDTO.builder()
-            .pw("Incorrect PWD")
-            .build();
+    private CommentDTO.RequestUpdateDTO requestUpdateDTO = new CommentDTO.RequestUpdateDTO(content, "Incorrect PWD");
+    private CommentDTO.RequestDeleteDTO requestDeleteDTO = new CommentDTO.RequestDeleteDTO("Incorrect PWD");
+
 
     public Game makeGameEntity(){
         return Game.builder()

@@ -71,7 +71,8 @@ public class S3ServiceImpl implements FileService {
     @Override
     public int delete(String imageUrl) {
         try {
-            deleteFile(imageUrl);
+            if(imageUrl != null)
+                deleteFile(imageUrl);
         } catch (UnsupportedEncodingException | ArrayIndexOutOfBoundsException e) {
             return -1;
         }
@@ -84,7 +85,8 @@ public class S3ServiceImpl implements FileService {
         int ret = 0;
         for(int i=0; i<len; i++) {
             try {
-                deleteFile(imageUrls[i]);
+                if(imageUrls[i] != null)
+                    deleteFile(imageUrls[i]);
             } catch (UnsupportedEncodingException | ArrayIndexOutOfBoundsException e) {
                 ret = -1;
             }

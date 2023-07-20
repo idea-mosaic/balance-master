@@ -41,6 +41,10 @@ dependencies {
 	testImplementation 'org.mockito:mockito-junit-jupiter:5.3.1'
 	implementation 'com.google.code.gson:gson:2.9.0'
 
+	// Spring
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+
 }
 
 tasks.named('test') {

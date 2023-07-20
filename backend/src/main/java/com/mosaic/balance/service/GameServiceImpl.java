@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.CannotCreateTransactionException;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 
@@ -30,8 +31,11 @@ public class GameServiceImpl implements GameService {
     public GameDTO.GameCreatedDTO createGame(GameDTO.GameCreateDTO gameCreateDTO) throws Exception {
         logger.info("Create game : {}", gameCreateDTO.getTitle());
 
-        String redImgPath = fileService.upload(gameCreateDTO.getRedImg());
-        String blueImgPath = fileService.upload(gameCreateDTO.getBlueImg());
+        String[] imgUrls = fileService.upload(new MultipartFile[] {
+                gameCreateDTO.getRedImg(),
+                gameCreateDTO.getBlueImg(),
+        }, "image");
+
         logger.info("Successfully uploaded file");
 
         try {
@@ -41,8 +45,8 @@ public class GameServiceImpl implements GameService {
                     .blue(gameCreateDTO.getBlue())
                     .redDescription(gameCreateDTO.getRedDescription())
                     .blueDescription(gameCreateDTO.getBlueDescription())
-                    .redImg(redImgPath)
-                    .blueImg(blueImgPath)
+                    .redImg(imgUrls[0])
+                    .blueImg(imgUrls[1])
                     .password(gameCreateDTO.getPw())
                     .build();
 
@@ -57,8 +61,7 @@ public class GameServiceImpl implements GameService {
 
         } catch (IllegalArgumentException e) {
             logger.info("Failed to create entity");
-            fileService.delete(redImgPath);
-            fileService.delete(blueImgPath);
+            fileService.delete(imgUrls);
             logger.info("Successfully deleted images");
             throw new CannotCreateTransactionException("Failed to create Game");
         }
@@ -116,25 +119,17 @@ public class GameServiceImpl implements GameService {
 
         String redImgUrl = game.getRedImg();
         String blueImgUrl = game.getBlueImg();
-        String newRedImgUrl = null;
-        String newBlueImgUrl = null;
+        String[] newImgUrl = fileService.upload(
+                new MultipartFile[] {gameCreateDTO.getRedImg(), gameCreateDTO.getBlueImg()}, "image");
 
-        if(gameCreateDTO.getRedImg() != null) {
-            newRedImgUrl = fileService.upload(gameCreateDTO.getRedImg());
-            logger.info("new file for Red uploaded : {}", newRedImgUrl);
-        }
-        if(gameCreateDTO.getBlueImg() != null) {
-            newBlueImgUrl = fileService.upload(gameCreateDTO.getBlueImg());
-            logger.info("new file for Blue uploaded : {}", newRedImgUrl);
-        }
 
         try {
-            game.modify(gameCreateDTO, newRedImgUrl, newBlueImgUrl);
+            game.modify(gameCreateDTO, newImgUrl[0], newImgUrl[1]);
             gameRepository.save(game);
         } catch (IllegalArgumentException e) {
             logger.info("Failed to Update Entity\n Caused by : {}", e.getCause());
-            fileService.delete(newRedImgUrl);
-            fileService.delete(newBlueImgUrl);
+            fileService.delete(newImgUrl);
+            throw new IllegalArgumentException();
         }
 
         logger.info("Successfully Updated Entity, delete old files");
@@ -143,8 +138,8 @@ public class GameServiceImpl implements GameService {
 
         return GameDTO.GameModifiedDTO.builder()
                 .gameId(game.getGameSeq())
-                .redImg(newRedImgUrl)
-                .blueImg(newBlueImgUrl)
+                .redImg(game.getRedImg())
+                .blueImg(game.getBlueImg())
                 .createdDate(game.getCreatedTime())
                 .build();
     }

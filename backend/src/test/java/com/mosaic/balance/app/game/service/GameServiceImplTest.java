@@ -21,6 +21,7 @@ import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import java.io.IOException;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -51,7 +52,7 @@ class GameServiceImplTest {
         // thenReturn : execute & return
         when(gameRepository.save(any(Game.class))).thenReturn(Game.builder().gameSeq(32L).build());
         // doReturn : return without executing
-//        doReturn("img_url").when(fileService).upload(any());
+        doReturn(new String[2]).when(fileService).upload(any(MultipartFile[].class), anyString());
 
         // when
         GameDTO.GameCreatedDTO result = gameService.createGame(gameCreateDTO());
@@ -65,7 +66,7 @@ class GameServiceImplTest {
     public void createGameWithImgTest() throws Exception {
         // given
         when(gameRepository.save(any(Game.class))).thenReturn(Game.builder().gameSeq(32L).build());
-        doReturn("img_url.jpg").when(fileService).upload(any(MultipartFile.class));
+        doReturn(new String[2]).when(fileService).upload(any(MultipartFile[].class), anyString());
 
         // when
         GameDTO.GameCreatedDTO result = gameService.createGame(gameCreateWithImageDTO());
@@ -77,11 +78,11 @@ class GameServiceImplTest {
     @Test
     public void failedToUploadImgTest() throws Exception {
         // given
-        when(fileService.upload(any())).thenThrow(new Exception());
+        when(fileService.upload(any(MultipartFile[].class), anyString())).thenThrow(new IOException());
 
         // when & then
         Assertions.assertThatThrownBy(() -> gameService.createGame(gameCreateDTO()))
-                .isInstanceOf(Exception.class);
+                .isInstanceOf(IOException.class);
 
     }
 
@@ -90,6 +91,7 @@ class GameServiceImplTest {
         // given
         when(gameRepository.save(any()))
                 .thenThrow(new CannotCreateTransactionException("Failed to create Game"));
+        doReturn(new String[2]).when(fileService).upload(any(MultipartFile[].class), anyString());
         // create file
 
         // when
@@ -163,6 +165,7 @@ class GameServiceImplTest {
         // given
         when(gameRepository.findById(anyLong()))
                 .thenReturn(Optional.of(Game.builder().password("1234").build()));
+        doReturn(new String[2]).when(fileService).upload(any(MultipartFile[].class), anyString());
 
         // when
         GameDTO.GameModifiedDTO result = gameService.modifyGame(123L, gameCreateDTO());
@@ -176,19 +179,19 @@ class GameServiceImplTest {
         // given
         when(gameRepository.findById(anyLong()))
                 .thenReturn(Optional.of(Game.builder().password("1234").build()));
-        doReturn("new_img_url").when(fileService).upload(any());
+        doReturn(new String[]{"new_img_url", ""}).when(fileService).upload(any(MultipartFile[].class), anyString());
 
         // when
         GameDTO.GameModifiedDTO result = gameService.modifyGame(123L, gameCreateWithImageDTO());
 
         // then
         assertNotNull(result);
-        assertEquals(result.getRedImg(), "new_img_url");
+        assertEquals("new_img_url", result.getRedImg());
         // check whether file has been deleted
     }
 
     @Test
-    public void modifyGameWithIncorrectPWTest() {
+    public void modifyGameWithIncorrectPWTest() throws Exception {
         // given
         when(gameRepository.findById(anyLong()))
                 .thenReturn(Optional.of(Game.builder().password("password").build()));
@@ -199,7 +202,7 @@ class GameServiceImplTest {
     }
 
     @Test
-    public void modifyGameNotFoundTest() {
+    public void modifyGameNotFoundTest() throws Exception {
         // given
         when(gameRepository.findById(anyLong())).thenReturn(Optional.empty());
 
@@ -215,12 +218,12 @@ class GameServiceImplTest {
                 .thenReturn(Optional.of(Game.builder()
                                 .password("1234")
                                 .redImg("original_image.png").build()));
-        doThrow(Exception.class).when(fileService).upload(any());
+        doThrow(IOException.class).when(fileService).upload(any(MultipartFile[].class), anyString());
 
         // when
         Assertions.assertThatThrownBy(() ->
                 gameService.modifyGame(12345L, gameCreateWithImageDTO()))
-                .isInstanceOf(Exception.class);
+                .isInstanceOf(IOException.class);
 
         // then
     }
@@ -230,7 +233,7 @@ class GameServiceImplTest {
         - success(correct pw)
         - unauthorized
         - not found
-        - failed to delete file
+        - failed to delete file [Unable to get result from s3.deleteObject()]
      */
     @Test
     public void deleteGameTest() throws Exception {
@@ -239,8 +242,7 @@ class GameServiceImplTest {
                 .thenReturn(Optional.of(Game.builder()
                                 .redImg("src_img.jpg")
                                 .password("1234").build()));
-        doReturn(1).when(fileService).delete(anyString());
-        doReturn(0).when(fileService).delete(null);
+        doReturn(0).when(fileService).delete(anyString());
 
         // when
         int res = gameService.deleteGame(123L, "1234");
@@ -272,24 +274,6 @@ class GameServiceImplTest {
         Assertions.assertThatThrownBy(() ->
                 gameService.deleteGame(123L, "1234"))
                 .isInstanceOf(NoSuchElementException.class);
-    }
-
-    @Test
-    public void deleteGameFailedWithFileTest() throws Exception {
-        // given
-        when(gameRepository.findById(anyLong()))
-                .thenReturn(Optional.of(Game.builder()
-                                .redImg("src_image.jpg")
-                                .password("1234").build()));
-        doThrow(Exception.class).when(fileService).delete(anyString());
-
-        // when
-        Assertions.assertThatThrownBy(() ->
-                gameService.deleteGame(123L, "1234"))
-                .isInstanceOf(Exception.class);
-
-        // then
-        // check files still exists
     }
 
 

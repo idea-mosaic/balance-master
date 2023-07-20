@@ -108,6 +108,7 @@ public class S3ServiceImpl implements FileService {
 
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(multipartFile.getInputStream().available());
+        objectMetadata.setContentType(multipartFile.getContentType());
 
         // throws SDKClientException & AmazonServiceException
         amazonS3.putObject(bucket, filePath, multipartFile.getInputStream(), objectMetadata);

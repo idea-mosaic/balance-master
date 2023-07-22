@@ -72,6 +72,7 @@ public class GameDTO {
         private String blueDescription;
         private String redImg;
         private String blueImg;
+        private CommentDTO.ResponseReadDTO commentDetails;
         private LocalDateTime createdDate;
     }
 

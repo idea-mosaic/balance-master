@@ -63,6 +63,7 @@ public class CommentServiceImpl implements CommentService{
     @Override
     public void deleteComment(long commentSeq, CommentDTO.RequestDeleteDTO requestDeleteDTO) {
         Comment comment = commentRepository.findById(commentSeq).orElseThrow(()->new CommentException(CommentErrorResult.COMMENT_NOT_EXIST));
+        if(comment.getGame() == null ) throw new CommentException(CommentErrorResult.GAME_NOT_EXIST);
         if(!comment.getPwd().equals(requestDeleteDTO.getPw())) {
             throw new CommentException(CommentErrorResult.PWD_INCORRECT);
         }

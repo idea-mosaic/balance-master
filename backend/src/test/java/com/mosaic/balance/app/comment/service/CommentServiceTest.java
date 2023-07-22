@@ -73,14 +73,18 @@ public class CommentServiceTest {
     public void GameNotExist(){
         //given
         doReturn(Optional.empty()).when(gameRepository).findById(gameSeq);
-
+        doReturn(Optional.of(makeCommentEntity(null))).when(commentRepository).findById(any(Long.class));
         //when
         final CommentException result = assertThrows(
                 CommentException.class,
                 ()-> commentService.createComment(gameSeq, requestCreateDTO));
-
+        final CommentException result2 = assertThrows(
+                CommentException.class,
+                ()->commentService.deleteComment(gameSeq, requestDeleteDTO)
+        );
         //then
         assertThat(result.getErrorResult()).isEqualTo(CommentErrorResult.GAME_NOT_EXIST);
+        assertThat(result2.getErrorResult()).isEqualTo(CommentErrorResult.GAME_NOT_EXIST);
     }
 
     @Test

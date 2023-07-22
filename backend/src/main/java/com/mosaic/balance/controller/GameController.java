@@ -1,7 +1,9 @@
 package com.mosaic.balance.controller;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.mosaic.balance.dto.CommentDTO;
 import com.mosaic.balance.dto.GameDTO;
+import com.mosaic.balance.service.CommentService;
 import com.mosaic.balance.service.GameService;
 import com.mosaic.balance.util.IPAddressUtil;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -28,6 +31,7 @@ public class GameController {
     private final Logger logger = LoggerFactory.getLogger(GameController.class);
 
     private final GameService gameService;
+    final private CommentService commentService;
 
     @GetMapping("/test")
     public ResponseEntity<Map<String, Object>> addrTest(HttpServletRequest request) {
@@ -73,7 +77,10 @@ public class GameController {
     }
 
     @GetMapping("/{gameId}")
-    public ResponseEntity<Map<String, Object>> gameDetail(HttpServletRequest request, @PathVariable long gameId) {
+    public ResponseEntity<Map<String, Object>> gameDetail(
+            HttpServletRequest request,
+            @PathVariable long gameId,
+            @RequestBody CommentDTO.RequestReadDTO commentReadDTO) {
         HttpStatus status;
         Map<String, Object> resultMap = new HashMap<>();
 
@@ -87,7 +94,7 @@ public class GameController {
             }
 
             // ip address will be determined soon...
-            GameDTO.GameDetailResponseDTO gameDetailResponseDTO = gameService.gameDetail(gameId, 123L);
+            GameDTO.GameDetailResponseDTO gameDetailResponseDTO = gameService.gameDetail(gameId, 123L, commentReadDTO);
             status = HttpStatus.OK;
             resultMap.put("game", gameDetailResponseDTO.getGame());
             resultMap.put("result", gameDetailResponseDTO.getResult());
@@ -161,5 +168,35 @@ public class GameController {
         }
 
         return new ResponseEntity(status);
+    }
+
+    @PostMapping("{gameId}/comments")
+    public ResponseEntity<CommentDTO.ResponseCreateDTO> addGameComment(
+            @PathVariable("gameId") long gameId,
+            @RequestBody @Valid CommentDTO.RequestCreateDTO requestCreateDTO) {
+
+        return new ResponseEntity<>(
+                commentService.createComment(gameId,requestCreateDTO),
+                HttpStatus.CREATED);
+    }
+
+    @PatchMapping("{gameId}/comments/{commentId}")
+    public ResponseEntity<CommentDTO.ResponseUpdateDTO> updateGameComment(
+            @PathVariable("gameId") long gameId,
+            @PathVariable("commentId") long commentId,
+            @RequestBody @Valid CommentDTO.RequestUpdateDTO requestUpdateDTO){
+        return new ResponseEntity<>(
+                commentService.updateComment(gameId,commentId,requestUpdateDTO),
+                HttpStatus.OK
+        );
+    }
+
+    @PostMapping("{gameId}/comments/{commentId}")
+    public ResponseEntity<?> deleteGameComment(
+            @PathVariable("gameId") long gameSeq,
+            @PathVariable("commentId") long commentSeq,
+            @RequestBody CommentDTO.RequestDeleteDTO requestDeleteDTO){
+        commentService.deleteComment(commentSeq,requestDeleteDTO);
+        return ResponseEntity.ok().build();
     }
 }

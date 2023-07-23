@@ -170,6 +170,15 @@ public class GameController {
         return new ResponseEntity(status);
     }
 
+    @GetMapping("{gameId}/comments")
+    public ResponseEntity<CommentDTO.ResponseReadDTO> getGameComments(
+            @PathVariable("gameId") long gameId,
+            @RequestBody @Valid CommentDTO.RequestReadDTO requestReadDTO){
+        return new ResponseEntity<>(
+                commentService.getComments(gameId, requestReadDTO),
+                HttpStatus.OK);
+    }
+
     @PostMapping("{gameId}/comments")
     public ResponseEntity<CommentDTO.ResponseCreateDTO> addGameComment(
             @PathVariable("gameId") long gameId,

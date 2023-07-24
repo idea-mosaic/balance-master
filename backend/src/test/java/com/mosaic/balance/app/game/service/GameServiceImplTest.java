@@ -2,9 +2,11 @@ package com.mosaic.balance.app.game.service;
 
 import com.mosaic.balance.domain.Game;
 import com.mosaic.balance.domain.Vote;
+import com.mosaic.balance.dto.CommentDTO;
 import com.mosaic.balance.dto.GameDTO;
 import com.mosaic.balance.repository.GameRepository;
 import com.mosaic.balance.repository.VoteRepository;
+import com.mosaic.balance.service.CommentService;
 import com.mosaic.balance.service.FileService;
 import com.mosaic.balance.service.GameServiceImpl;
 import org.assertj.core.api.Assertions;
@@ -22,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -38,7 +41,8 @@ class GameServiceImplTest {
     private GameRepository gameRepository;
     @Mock
     private VoteRepository voteRepository;
-
+    @Mock
+    private CommentService commentService;
     /*
     Create
         - success(without image)
@@ -117,7 +121,7 @@ class GameServiceImplTest {
         //
 
         // when
-        GameDTO.GameDetailResponseDTO result = gameService.gameDetail(1L, 192168000001L);
+        GameDTO.GameDetailResponseDTO result = gameService.gameDetail(1L, 192168000001L,null);
 
         // then
         assertNotNull(result);
@@ -128,11 +132,14 @@ class GameServiceImplTest {
     public void readPlayedGameTest() {
         // given
         when(gameRepository.findById(anyLong())).thenReturn(Optional.of(Game.builder().build()));
+
         when(voteRepository.existsByVotePKGameGameSeqAndVotePKParticipantSeq(anyLong(), anyLong()))
                 .thenReturn(true);
-
+        when(commentService.getComments(anyLong(), any(CommentDTO.RequestReadDTO.class)))
+                .thenReturn((new CommentDTO.ResponseReadDTO(new ArrayList<>(),new ArrayList<>())));
         // when
-        GameDTO.GameDetailResponseDTO result = gameService.gameDetail(1L, 127168000001L);
+        GameDTO.GameDetailResponseDTO result = gameService.gameDetail(1L, 127168000001L,
+                new CommentDTO.RequestReadDTO(0,0,0,0));
 
         // then
         assertNotNull(result);
@@ -145,7 +152,7 @@ class GameServiceImplTest {
         when(gameRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         // when & then
-        Assertions.assertThatThrownBy(() -> gameService.gameDetail(1L, 1354645646L))
+        Assertions.assertThatThrownBy(() -> gameService.gameDetail(1L, 1354645646L,null))
                 .isInstanceOf(NoSuchElementException.class);
 
     }

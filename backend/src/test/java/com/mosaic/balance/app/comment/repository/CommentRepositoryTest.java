@@ -11,6 +11,8 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.mockito.internal.exceptions.ExceptionIncludingMockitoWarnings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,20 +35,22 @@ public class CommentRepositoryTest {
     @Autowired
     private EntityManager entityManager;
     private static int time = 1;
-    public ArrayList<Comment> makeCommentEntity(Game game){
+    public ArrayList<Comment> makeCommentEntity(Game game,long seq){
         ArrayList<Comment> ret =new ArrayList<>();
         ret.add(Comment.builder()
-                .commentSeq(1L)
+                .commentSeq(seq+1)
                 .color(true)
                 .content("Test create comment Red")
                 .nickname("anony")
+                .pwd("test_pwd")
                 .game(game)
                 .build());
         ret.add(Comment.builder()
-                .commentSeq(2L)
+                .commentSeq(seq+2)
                 .color(false)
                 .content("Test create comment Blue")
                 .nickname("anony")
+                .pwd("test_pwd")
                 .game(game)
                 .build());
         return ret;
@@ -65,7 +69,7 @@ public class CommentRepositoryTest {
     public void createComment(){
         // given
         final Game game = gameRepository.save(makeGameEntity());
-        final ArrayList<Comment> comment = makeCommentEntity(game);
+        final ArrayList<Comment> comment = makeCommentEntity(game,0);
 
         //when
         final Comment resultRedComment = commentRepository.save(comment.get(0));
@@ -87,7 +91,7 @@ public class CommentRepositoryTest {
         Game game = null ;
         if(!optionalGame.isPresent()){
             game = gameRepository.save(makeGameEntity());
-            for (Comment comment : makeCommentEntity(game)){
+            for (Comment comment : makeCommentEntity(game,0)){
                 commentRepository.save(comment);
             }
         }else {
@@ -118,6 +122,73 @@ public class CommentRepositoryTest {
         assertThat(comments.get(0).isColor()).isFalse();
         assertThat(comments.get(0).getContent()).isEqualTo("Test create comment Blue");
     }
+    @Test
+    @Order(4)
+    public void updateComment() throws Exception{
+        final Comment comment = commentRepository.findById(2L).get();
+        final String modifiedContent = "test update content";
+
+        final Comment modifiedComment = Comment.builder()
+                .commentSeq(comment.getCommentSeq())
+                .color(comment.isColor())
+                .content(modifiedContent)
+                .pwd(comment.getPwd())
+                .nickname(comment.getNickname())
+                .build();
+        commentRepository.save(modifiedComment);
+        assertThat(commentRepository.findById(2L).get().getContent()).isEqualTo("test update content");
+    }
+    @Test
+    @Order(6)
+    public void pagingComment() throws Exception{
+        //given
+        final Game game = gameRepository.findById(1L).orElseThrow(()-> new Exception("not exist game : 1L"));
+        List<Comment> comments = makeCommentEntity(game,100L);
+        for(Comment comment : comments){
+            commentRepository.save(comment);
+        }
+
+        PageRequest pageRequest = PageRequest.of(0,2);
+
+        //when
+        final List<Comment> commentsRed = commentRepository.findByGameAndColor(game,false, pageRequest);
+        final List<Comment> commentsBlue = commentRepository.findByGameAndColor(game, true, pageRequest);
+        //then
+        assertThat(commentsRed.size()).isEqualTo(2);
+        assertThat(commentsBlue.size()).isEqualTo(1);
 
 
+    }
+    @Test
+    @Order(7)
+    @Rollback(value = false)
+    public void createdCommentTime() throws Exception{
+        //given
+        final Game game = makeGameEntity();
+        final List<Comment> comments = makeCommentEntity(game,100L);
+
+        //when
+        final Comment beforeComment = commentRepository.save(comments.get(0));
+        final Comment afterComment = commentRepository.save(comments.get(1));
+
+        //then
+        assertThat(beforeComment.getCreatedTime().isBefore(afterComment.getCreatedTime())).isTrue();
+
+    }
+
+    @Test
+    @Order(8)
+    public void updatedCommentTime() throws Exception{
+        //given
+        Comment comment = commentRepository.findById(5L).orElseThrow(()->new Exception("not exist comment:5L"));
+
+        //when
+        comment.updateContent("Test updated time");
+        commentRepository.save(comment);
+        commentRepository.flush();
+        comment = commentRepository.findById(5L).orElseThrow(()->new Exception("not exist comment : 5L"));
+
+        //then
+        assertThat(comment.getUpdatedTime().getNano()).isNotEqualTo(comment.getCreatedTime().getNano());
+    }
 }

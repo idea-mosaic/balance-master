@@ -2,6 +2,7 @@ package com.mosaic.balance.app.game.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mosaic.balance.controller.GameController;
+import com.mosaic.balance.dto.CommentDTO;
 import com.mosaic.balance.dto.GameDTO;
 import com.mosaic.balance.service.GameService;
 import jdk.jfr.ContentType;
@@ -160,7 +161,7 @@ public class GameControllerTest {
     public void detailGameTest() throws Exception {
         // given
         String url = "/games/123";
-        when(gameService.gameDetail(anyLong(), anyLong()))
+        when(gameService.gameDetail(anyLong(), anyLong(), any(CommentDTO.RequestReadDTO.class)))
                 .thenReturn(GameDTO.GameDetailResponseDTO.builder()
                         .game(GameDTO.GameDetailDTO.builder().gameId(49L).build())
                         .build());
@@ -169,6 +170,7 @@ public class GameControllerTest {
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders.get(url)
                         .header("X-Forwarded-For", "192.168.0.1")
+                        .content(gson.toJson(new CommentDTO.RequestReadDTO(0,1,0,1)))
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
@@ -183,13 +185,15 @@ public class GameControllerTest {
     public void detailGameNotFoundTest() throws Exception {
         // given
         String url = "/games/123";
-        when(gameService.gameDetail(anyLong(), anyLong()))
+        when(gameService.gameDetail(anyLong(), anyLong(),any(CommentDTO.RequestReadDTO.class)))
                 .thenThrow(NoSuchElementException.class);
 
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders.get(url)
                         .header("X-Forwarded-For", "192.168.0.1")
+                        .content(gson.toJson(new CommentDTO.RequestReadDTO(0,1,0,1)))
+                        .contentType(MediaType.APPLICATION_JSON)
         );
 
         // then
@@ -204,6 +208,8 @@ public class GameControllerTest {
         // when
         ResultActions result = mockMvc.perform(
                 MockMvcRequestBuilders.get(url)
+                        .content(gson.toJson(new CommentDTO.RequestReadDTO(0,1,0,1)))
+                        .contentType(MediaType.APPLICATION_JSON)
         );
 
         // then

@@ -1,7 +1,9 @@
 package com.mosaic.balance.service;
 
 import com.mosaic.balance.domain.Game;
+import com.mosaic.balance.dto.CommentDTO;
 import com.mosaic.balance.dto.GameDTO;
+import com.mosaic.balance.repository.CommentRepository;
 import com.mosaic.balance.repository.GameRepository;
 import com.mosaic.balance.repository.VoteRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +24,9 @@ public class GameServiceImpl implements GameService {
     private final GameRepository gameRepository;
 
     private final VoteRepository voteRepository;
-
+    private final CommentRepository commentRepository;
     private final FileService fileService;
+    private final CommentService commentService;
 
     private final Logger logger = LoggerFactory.getLogger(GameServiceImpl.class);
 
@@ -68,11 +71,11 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public GameDTO.GameDetailResponseDTO gameDetail(long gameId, long userIdentifier) {
+    public GameDTO.GameDetailResponseDTO gameDetail(long gameId, long userIdentifier, CommentDTO.RequestReadDTO commentReadDTO) {
         logger.info("Get game detail : {}", gameId);
         // throws NoSuchElementException
         Game game = gameRepository.findById(gameId).get();
-
+        CommentDTO.ResponseReadDTO comments = commentService.getComments(gameId,commentReadDTO);
         GameDTO.GameDetailResponseDTO.GameDetailResponseDTOBuilder builder =
                 GameDTO.GameDetailResponseDTO.builder().game(
                         GameDTO.GameDetailDTO.builder()
@@ -84,6 +87,7 @@ public class GameServiceImpl implements GameService {
                                 .blueDescription(game.getBlueDescription())
                                 .redImg(game.getRedImg())
                                 .blueImg(game.getBlueImg())
+                                .commentDetails(comments)
                                 .createdDate(game.getCreatedTime())
                                 .build()
                 );

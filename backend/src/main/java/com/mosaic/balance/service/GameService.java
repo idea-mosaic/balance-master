@@ -1,5 +1,6 @@
 package com.mosaic.balance.service;
 
+import com.mosaic.balance.dto.CommentDTO;
 import com.mosaic.balance.dto.GameDTO;
 
 public interface GameService {
@@ -19,7 +20,7 @@ public interface GameService {
      * @return detail with/without result
      * @throws java.util.NoSuchElementException if element not found
      */
-    public GameDTO.GameDetailResponseDTO gameDetail(long gameId, long userIdentifier);
+    public GameDTO.GameDetailResponseDTO gameDetail(long gameId, long userIdentifier, CommentDTO.RequestReadDTO commentReadDTO);
 
     /**
      * Modify Game information

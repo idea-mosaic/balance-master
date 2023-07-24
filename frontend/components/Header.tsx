@@ -16,7 +16,7 @@ function Header() {
   };
 
   return (
-    <div className="h-16 flex justify-between items-center px-12">
+    <div className="h-16 flex justify-between sticky top-0 items-center px-12 bg-white z-10">
       <button onClick={handleClickLogo}>LOGO</button>
       <div className="flex gap-8">
         <button

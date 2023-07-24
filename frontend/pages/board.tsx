@@ -8,6 +8,7 @@ function board() {
         title="참여자가 많은 밸런스게임"
         boardData={[
           {
+            boardId: 1,
             redImage:
               "https://i.namu.wiki/i/zLCSMHVvvt9_ZJyb33kImeEfmrBewsgNll9AyPyVcyNNX2frg1svs7I-nrm-seExLN7BcJ__RJMJCGKDIUkgPg.webp",
             blueImage:
@@ -19,6 +20,7 @@ function board() {
             createDate: "2023-07-01 23:11",
           },
           {
+            boardId: 2,
             redImage: "",
             blueImage: "",
             redTitle: "짜장",
@@ -28,6 +30,7 @@ function board() {
             createDate: "2023-07-01 23:11",
           },
           {
+            boardId: 3,
             redImage:
               "https://i.namu.wiki/i/zLCSMHVvvt9_ZJyb33kImeEfmrBewsgNll9AyPyVcyNNX2frg1svs7I-nrm-seExLN7BcJ__RJMJCGKDIUkgPg.webp",
             blueImage:
@@ -39,6 +42,7 @@ function board() {
             createDate: "2023-07-01 23:11",
           },
           {
+            boardId: 4,
             redImage:
               "https://i.namu.wiki/i/zLCSMHVvvt9_ZJyb33kImeEfmrBewsgNll9AyPyVcyNNX2frg1svs7I-nrm-seExLN7BcJ__RJMJCGKDIUkgPg.webp",
             blueImage:
@@ -56,6 +60,7 @@ function board() {
         title="황금 밸런스게임"
         boardData={[
           {
+            boardId: 5,
             redImage: "",
             blueImage: "",
             redTitle: "짜장",
@@ -65,6 +70,7 @@ function board() {
             createDate: "2023-07-01 23:11",
           },
           {
+            boardId: 6,
             redImage:
               "https://i.namu.wiki/i/zLCSMHVvvt9_ZJyb33kImeEfmrBewsgNll9AyPyVcyNNX2frg1svs7I-nrm-seExLN7BcJ__RJMJCGKDIUkgPg.webp",
             blueImage:
@@ -76,6 +82,7 @@ function board() {
             createDate: "2023-07-01 23:11",
           },
           {
+            boardId: 7,
             redImage:
               "https://i.namu.wiki/i/zLCSMHVvvt9_ZJyb33kImeEfmrBewsgNll9AyPyVcyNNX2frg1svs7I-nrm-seExLN7BcJ__RJMJCGKDIUkgPg.webp",
             blueImage:
@@ -87,6 +94,7 @@ function board() {
             createDate: "2023-07-01 23:11",
           },
           {
+            boardId: 8,
             redImage:
               "https://i.namu.wiki/i/zLCSMHVvvt9_ZJyb33kImeEfmrBewsgNll9AyPyVcyNNX2frg1svs7I-nrm-seExLN7BcJ__RJMJCGKDIUkgPg.webp",
             blueImage:
@@ -104,6 +112,7 @@ function board() {
         title="최근 올라온 밸런스게임"
         boardData={[
           {
+            boardId: 9,
             redImage:
               "https://i.namu.wiki/i/zLCSMHVvvt9_ZJyb33kImeEfmrBewsgNll9AyPyVcyNNX2frg1svs7I-nrm-seExLN7BcJ__RJMJCGKDIUkgPg.webp",
             blueImage:
@@ -115,6 +124,7 @@ function board() {
             createDate: "2023-07-01 23:11",
           },
           {
+            boardId: 10,
             redImage:
               "https://i.namu.wiki/i/zLCSMHVvvt9_ZJyb33kImeEfmrBewsgNll9AyPyVcyNNX2frg1svs7I-nrm-seExLN7BcJ__RJMJCGKDIUkgPg.webp",
             blueImage:
@@ -126,6 +136,7 @@ function board() {
             createDate: "2023-07-01 23:11",
           },
           {
+            boardId: 11,
             redImage:
               "https://i.namu.wiki/i/zLCSMHVvvt9_ZJyb33kImeEfmrBewsgNll9AyPyVcyNNX2frg1svs7I-nrm-seExLN7BcJ__RJMJCGKDIUkgPg.webp",
             blueImage:
@@ -137,6 +148,7 @@ function board() {
             createDate: "2023-07-01 23:11",
           },
           {
+            boardId: 12,
             redImage:
               "https://i.namu.wiki/i/zLCSMHVvvt9_ZJyb33kImeEfmrBewsgNll9AyPyVcyNNX2frg1svs7I-nrm-seExLN7BcJ__RJMJCGKDIUkgPg.webp",
             blueImage:

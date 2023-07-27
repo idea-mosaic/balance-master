@@ -16,6 +16,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.access.AccessDeniedException;
@@ -25,6 +27,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -283,6 +286,28 @@ class GameServiceImplTest {
                 .isInstanceOf(NoSuchElementException.class);
     }
 
+    /*
+    List
+        - success
+     */
+    @Test
+    public void getGameListTest() throws Exception {
+        // given
+        List<Game> games = new ArrayList<>();
+        for(int i=0; i<4; i++)
+            games.add(Game.builder().build());
+        when(gameRepository.findAll(any(Pageable.class)))
+                .thenReturn(new PageImpl<Game>(games));
+
+        // when
+        GameDTO.GameListDTO gameListDTO = gameService.getGameList();
+
+        // then
+        assertEquals(4, gameListDTO.getHot().size());
+        assertEquals(4, gameListDTO.getSexy().size());
+        // TBD
+        assertEquals(4, gameListDTO.getCool().size());
+    }
 
     /**
      * Creates request DTO to create game

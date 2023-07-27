@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class GameDTO {
 
@@ -60,7 +61,8 @@ public class GameDTO {
     public static class GameThumbnailDTO {
         private long gameId;
         private String title;
-        private String img;
+        private String redImg;
+        private String blueImg;
         private LocalDateTime createdDate;
     }
 
@@ -97,5 +99,14 @@ public class GameDTO {
     public static class GameDetailResponseDTO {
         private GameDetailDTO game;
         private GameResultDTO result;
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class GameListDTO {
+        private List<GameThumbnailDTO> hot;
+        private List<GameThumbnailDTO> sexy;
+        private List<GameThumbnailDTO> cool;
     }
 }

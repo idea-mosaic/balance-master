@@ -10,12 +10,18 @@ import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -182,5 +188,46 @@ public class GameServiceImpl implements GameService {
         }
 
         return 0;
+    }
+
+    @Override
+    public GameDTO.GameListDTO getGameList() throws Exception {
+        logger.info("Get game list : {}");
+        // hot
+        PageRequest pageRequest = PageRequest.of(0, 4, Sort.by(Sort.Direction.DESC, "participantCnt"));
+        Page<Game> hotGames = gameRepository.findAll(pageRequest);
+
+        // sexy
+        pageRequest = pageRequest.withSort(Sort.Direction.DESC, "createdTime");
+        Page<Game> sexyGames = gameRepository.findAll(pageRequest);
+
+        // cool
+        pageRequest = pageRequest.withSort(Sort.Direction.ASC, "participantCnt");
+        Page<Game> coolGames = gameRepository.findAll(pageRequest);
+
+        List<GameDTO.GameThumbnailDTO> hots = new ArrayList<>();
+        List<GameDTO.GameThumbnailDTO> sexes = new ArrayList<>();
+        List<GameDTO.GameThumbnailDTO> cools = new ArrayList<>();
+
+        hotGames.forEach(game -> {hots.add(convertToThumbnail(game));});
+        sexyGames.forEach(game -> {sexes.add(convertToThumbnail(game));});
+        coolGames.forEach(game -> {cools.add(convertToThumbnail(game));});
+
+        if(hots.size() + sexes.size() + cools.size() < 1)
+            throw new NoSuchElementException();
+
+        return GameDTO.GameListDTO.builder()
+                    .hot(hots).sexy(sexes).cool(cools)
+                    .build();
+    }
+
+    private GameDTO.GameThumbnailDTO convertToThumbnail(Game game) {
+        return GameDTO.GameThumbnailDTO.builder()
+                .gameId(game.getGameSeq())
+                .title(game.getTitle())
+                .redImg(game.getRedImg())
+                .blueImg(game.getBlueImg())
+                .createdDate(game.getCreatedTime())
+                .build();
     }
 }

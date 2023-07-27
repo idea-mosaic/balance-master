@@ -385,6 +385,42 @@ public class GameControllerTest {
         result.andExpect(status().isInternalServerError());
     }
 
+    /*
+    Game List
+        - success
+        - empty
+     */
+    @Test
+    public void getGameListTest() throws Exception {
+        // given
+        String url = "/games";
+        when(gameService.getGameList()).thenReturn(GameDTO.GameListDTO.builder().build());
+
+        // when
+        ResultActions result = mockMvc.perform(
+                MockMvcRequestBuilders.get(url)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        result.andExpect(status().isOk());
+    }
+
+    @Test
+    public void emptyGameListTest() throws Exception {
+        // given
+        String url = "/games";
+        when(gameService.getGameList()).thenThrow(NoSuchElementException.class);
+
+        // when
+        ResultActions result = mockMvc.perform(
+                MockMvcRequestBuilders.get(url)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        result.andExpect(status().isNotFound());
+    }
 
 
     /**

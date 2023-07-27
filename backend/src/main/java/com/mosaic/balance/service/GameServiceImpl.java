@@ -75,7 +75,6 @@ public class GameServiceImpl implements GameService {
         logger.info("Get game detail : {}", gameId);
         // throws NoSuchElementException
         Game game = gameRepository.findById(gameId).get();
-        CommentDTO.ResponseReadDTO comments = commentService.getComments(gameId,commentReadDTO);
         GameDTO.GameDetailResponseDTO.GameDetailResponseDTOBuilder builder =
                 GameDTO.GameDetailResponseDTO.builder().game(
                         GameDTO.GameDetailDTO.builder()
@@ -87,7 +86,7 @@ public class GameServiceImpl implements GameService {
                                 .blueDescription(game.getBlueDescription())
                                 .redImg(game.getRedImg())
                                 .blueImg(game.getBlueImg())
-                                .commentDetails(comments)
+//                                .commentDetails(comments)
                                 .createdDate(game.getCreatedTime())
                                 .build()
                 );
@@ -96,10 +95,14 @@ public class GameServiceImpl implements GameService {
             int totalCnt = game.getRedCnt() + game.getBlueCnt();
             // to avoid div by zero
             totalCnt = totalCnt > 0 ? totalCnt : 1;
+            if(commentReadDTO == null)
+                commentReadDTO = new CommentDTO.RequestReadDTO(0, 10, 0 ,10);
+            CommentDTO.ResponseReadDTO comments = commentService.getComments(gameId,commentReadDTO);
 
             GameDTO.GameResultDTO resultDTO = GameDTO.GameResultDTO.builder()
                     .redScore(game.getRedCnt() / totalCnt)
                     .blueScore(game.getBlueCnt() / totalCnt)
+                    .commentDetails(comments)
                     // about comments
                     .build();
 

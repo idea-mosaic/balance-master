@@ -170,6 +170,26 @@ public class GameController {
         return new ResponseEntity(status);
     }
 
+    @GetMapping
+    public ResponseEntity<GameDTO.GameListDTO> getGameList() {
+        HttpStatus status;
+        logger.info("Get Game list");
+        try {
+            GameDTO.GameListDTO gameListDTO = gameService.getGameList();
+            status = HttpStatus.OK;
+            return new ResponseEntity<>(gameListDTO, status);
+
+        } catch (NoSuchElementException e) {
+            logger.info("No games are found");
+            status = HttpStatus.NOT_FOUND;
+        } catch (Exception e) {
+            logger.info("Unintended Error : {}", e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return new ResponseEntity<>(status);
+    }
+
     @GetMapping("{gameId}/comments")
     public ResponseEntity<CommentDTO.ResponseReadDTO> getGameComments(
             @PathVariable("gameId") long gameId,

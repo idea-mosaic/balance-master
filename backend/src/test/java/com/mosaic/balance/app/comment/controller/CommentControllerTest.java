@@ -2,6 +2,7 @@ package com.mosaic.balance.app.comment.controller;
 
 import com.google.gson.Gson;
 import com.mosaic.balance.controller.GameCommentController;
+import com.mosaic.balance.controller.GameController;
 import com.mosaic.balance.domain.Comment;
 import com.mosaic.balance.domain.Game;
 import com.mosaic.balance.dto.CommentDTO;
@@ -29,7 +30,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(MockitoExtension.class)
 public class CommentControllerTest {
     @InjectMocks
-    private GameCommentController gameCommentController;
+//    private GameCommentController gameCommentController;
+    private GameController gameController;
     @Mock
     private CommentService commentService;
     private MockMvc mockMvc;
@@ -38,7 +40,7 @@ public class CommentControllerTest {
     @BeforeEach
     public void init(){
         gson = new Gson();
-        mockMvc = MockMvcBuilders.standaloneSetup(gameCommentController)
+        mockMvc = MockMvcBuilders.standaloneSetup(gameController)
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
     }

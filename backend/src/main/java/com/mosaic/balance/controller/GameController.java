@@ -80,7 +80,7 @@ public class GameController {
     public ResponseEntity<Map<String, Object>> gameDetail(
             HttpServletRequest request,
             @PathVariable long gameId,
-            @RequestBody CommentDTO.RequestReadDTO commentReadDTO) {
+            @RequestBody(required = false) CommentDTO.RequestReadDTO commentReadDTO) {
         HttpStatus status;
         Map<String, Object> resultMap = new HashMap<>();
 

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 
 public class GameDTO {
@@ -15,8 +16,11 @@ public class GameDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class GameCreateDTO {
+        @NotEmpty
         private String title;
+        @NotEmpty
         private String red;
+        @NotEmpty
         private String blue;
         private String redDescription;
         private String blueDescription;
@@ -72,7 +76,7 @@ public class GameDTO {
         private String blueDescription;
         private String redImg;
         private String blueImg;
-        private CommentDTO.ResponseReadDTO commentDetails;
+//        private CommentDTO.ResponseReadDTO commentDetails;
         private LocalDateTime createdDate;
     }
 
@@ -82,6 +86,7 @@ public class GameDTO {
     public static class GameResultDTO {
         private float redScore;
         private float blueScore;
+        private CommentDTO.ResponseReadDTO commentDetails;
 //        private LinkedList<> redComments;
 //        private LinkedList<> blueComments;
     }

@@ -11,7 +11,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("games")
+//@RequestMapping("games")
 public class GameCommentController {
 
     final private CommentService commentService;

@@ -116,6 +116,7 @@ class GameRepositoryTest {
     @Test
     public void emptyGameListTest() {
         // given
+        gameRepository.deleteAll();
 
         // when
         PageRequest pageRequest = PageRequest.of(0, 4, Sort.by(Sort.Direction.DESC, "participantCnt"));

@@ -309,6 +309,17 @@ class GameServiceImplTest {
         assertEquals(4, gameListDTO.getCool().size());
     }
 
+    @Test
+    public void getGameEmptyTest() throws Exception {
+        // given
+        when(gameRepository.findAll(any(Pageable.class)))
+                .thenReturn(new PageImpl<>(new ArrayList<>()));
+
+        // when & then
+        Assertions.assertThatThrownBy(() -> gameService.getGameList())
+                        .isInstanceOf(NoSuchElementException.class);
+    }
+
     /**
      * Creates request DTO to create game
      * @return DTO

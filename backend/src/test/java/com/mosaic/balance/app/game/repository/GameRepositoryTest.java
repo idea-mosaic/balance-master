@@ -112,6 +112,19 @@ class GameRepositoryTest {
         // DNP [TBD]
 
     }
+
+    @Test
+    public void emptyGameListTest() {
+        // given
+
+        // when
+        PageRequest pageRequest = PageRequest.of(0, 4, Sort.by(Sort.Direction.DESC, "participantCnt"));
+        List<Game> hotGames = gameRepository.findAll(pageRequest).getContent();
+
+        assertTrue(hotGames.isEmpty());
+        assertEquals(0, hotGames.size());
+    }
+
     private Game game() {
         return Game.builder()
                 .title("red vs. blue")

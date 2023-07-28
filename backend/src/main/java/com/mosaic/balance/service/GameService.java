@@ -42,4 +42,11 @@ public interface GameService {
      * @throws Exception when File UL/delete fails [TBD]
      */
     public int deleteGame(long gameId, String pw) throws Exception;
+
+    /**
+     * Get game lists : hot(hot), sexy(new), cool(no participants)
+     * @return 4 game thumbnails for each
+     * @throws Exception
+     */
+    public GameDTO.GameListDTO getGameList() throws Exception;
 }

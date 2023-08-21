@@ -6,6 +6,8 @@ import com.mosaic.balance.dto.GameDTO;
 import com.mosaic.balance.service.CommentService;
 import com.mosaic.balance.service.GameService;
 import com.mosaic.balance.util.IPAddressUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +28,7 @@ import java.util.NoSuchElementException;
 @RestController
 @RequestMapping("/games")
 @RequiredArgsConstructor
+@Tag(name = "[Game] Game Controller")
 public class GameController {
 
     private final Logger logger = LoggerFactory.getLogger(GameController.class);
@@ -34,6 +37,7 @@ public class GameController {
     final private CommentService commentService;
 
     @GetMapping("/test")
+    @Operation(description = "test for IP Address")
     public ResponseEntity<Map<String, Object>> addrTest(HttpServletRequest request) {
         HttpStatus status;
         Map<String, Object> resultMap = new HashMap<>();
@@ -47,6 +51,7 @@ public class GameController {
     }
 
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @Operation(summary = "create game")
     public ResponseEntity<Map<String, Object>> createGame(
             @RequestPart(value = "gameInfo") GameDTO.GameCreateDTO gameCreateDTO,
             @RequestPart(value = "redImg", required = false) MultipartFile redImg,
@@ -77,6 +82,7 @@ public class GameController {
     }
 
     @GetMapping("/{gameId}")
+    @Operation(summary = "Get game detail")
     public ResponseEntity<Map<String, Object>> gameDetail(
             HttpServletRequest request,
             @PathVariable long gameId,
@@ -114,6 +120,7 @@ public class GameController {
     }
 
     @PatchMapping(value = "/{gameId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @Operation(summary = "Modify Game")
     public ResponseEntity<Map<String, Object>> modifyGame(@PathVariable long gameId,
                     @RequestPart(value = "gameInfo", required = true)GameDTO.GameCreateDTO gameCreateDTO,
                     @RequestPart(value = "redImg", required = false) MultipartFile redImg,
@@ -146,6 +153,7 @@ public class GameController {
     }
 
     @DeleteMapping("{gameId}")
+    @Operation(summary = "Delete Game")
     public ResponseEntity deleteGame(@PathVariable long gameId, @RequestBody(required = false) String pw) {
         HttpStatus status;
 
